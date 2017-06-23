@@ -60,9 +60,15 @@ local escChars = {
 }
 
 function menumods.string.LevelPush(str, numLevels, noOuterQuotes)
+	local numLevels_new = numLevels
+	
+	if (not numLevels_new) then
+		numLevels_new = 1
+	end
+	
 	local newString = ("" .. str)
 	
-	for i = 1, numLevels do
+	for i = 1, numLevels_new do
 		for k, v in pairs(escChars) do
 			newString = string.Replace(newString, v, ("\\" .. v))
 		end
@@ -76,9 +82,15 @@ function menumods.string.LevelPush(str, numLevels, noOuterQuotes)
 end
 
 function menumods.string.LevelPop(str, numLevels)
+	local numLevels_new = numLevels
+	
+	if (not numLevels_new) then
+		numLevels_new = 1
+	end
+	
 	local newString = ("" .. str)
 	
-	for i = 1, numLevels do
+	for i = 1, numLevels_new do
 		for k, v in pairs(escChars) do
 			newString = string.Replace(newString, v, "")
 			newString = string.Replace(newString, ("\\" .. v), v)
