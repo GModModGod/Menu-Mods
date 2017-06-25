@@ -262,7 +262,25 @@ function menumods.RemoveElement(identifier)
 	MenuMods_ElementTables["" .. identifier] = nil
 end
 
-function menumods.AddExistingElement(identifier)
+function menumods.RemoveHTMLElement(searchType, ...)
+	if (not pnlMainMenu) then return end
+	if (not pnlMainMenu.HTML) then return end
+	if (not isstring(searchType)) then return end
+	
+	if (searchType == "classname") then
+		pnlMainMenu.HTML:RemoveElementByClassName(...)
+	elseif (searchType == "id") then
+		pnlMainMenu.HTML:RemoveElementByID(...)
+	elseif (searchType == "menumodsid") then
+		pnlMainMenu.HTML:RemoveElement(...)
+	elseif (searchType == "name") then
+		pnlMainMenu.HTML:RemoveElementByName(...)
+	elseif (searchType == "tagname") then
+		pnlMainMenu.HTML:RemoveElementByTagName(...)
+	end
+end
+
+function menumods.ReAddExistingElement(identifier)
 	if (not MenuMods_ElementTables["" .. identifier]) then return end
 	
 	MenuMods_ElementTables["" .. identifier].disabled = false
@@ -358,7 +376,7 @@ local function MenuMods_Init(self)
 				exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(parentClass, 1) .. ");\n"
 			end
 			
-			exec = exec .. "if (elements.length >= " .. parentNum .. ") {\nvar element = elements[" .. (parentNum - 1) .. "];\nif (element != undefined) {\nvar object = document.createElement(\"" .. tag .. "\");\nelement.appendChild(object);\n"
+			exec = exec .. "if (elements.length >= " .. parentNum .. ") {\nvar element = elements[" .. (parentNum - 1) .. "];\nif ((element != undefined) && (element != null)) {\nvar object = document.createElement(\"" .. tag .. "\");\nelement.appendChild(object);\n"
 			
 			local ID = menumods.FindID(identifier)
 			
@@ -440,7 +458,7 @@ local function MenuMods_Init(self)
 				exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(class, 1) .. ");\n"
 			end
 			
-			exec = exec .. "if (objects.length >= " .. num .. ") {\nvar object = objects[" .. (num - 1) .. "];\nif (object != undefined) {\n"
+			exec = exec .. "if (objects.length >= " .. num .. ") {\nvar object = objects[" .. (num - 1) .. "];\nif ((object != undefined) && (object != null)) {\n"
 			
 			for k, v in pairs(attributes) do
 				if isnumber(k) then
@@ -477,7 +495,7 @@ local function MenuMods_Init(self)
 	end
 	
 	function self.HTML:RemoveElement(id)
-		local exec = "var object = document.getElementById(\"menumods_" .. id .. "\");\nobject.parentNode.removeChild(object);\n"
+		local exec = "var object = document.getElementById(\"menumods_" .. id .. "\");\nif (object != null) {\nif (object.parentNode != undefined) {\nobject.parentNode.removeChild(object);\n};\n};\n"
 		
 		self:Call(exec)
 		
@@ -485,12 +503,76 @@ local function MenuMods_Init(self)
 			menumods.CreateLog(exec, ".txt")
 		end
 		
-		menumods.hook.Run("ElementRemoved", id)
+		menumods.hook.Run("ElementRemoved", "menumods_id", id)
 		
 		menumods.RemoveID(id)
 		
 		if (GetConVarNumber("menuMods_debugMode") != 0) then
+			print("Menu Mods: Removed element of Menu Mods ID " .. menumods.string.LevelPush(id, 1) .. ".")
+		end
+	end
+	
+	function self.HTML:RemoveElementByID(id)
+		local exec = "var object = document.getElementById(" .. menumods.string.LevelPush(id, 1) .. ");\nif (object != null) {\nif ((object.parentNode != undefined) && (object.parentNode != null) && (object.id.indexOf(\"menumods_\") != 0)) {\nobject.parentNode.removeChild(object);\n};\n};\n"
+		
+		self:Call(exec)
+		
+		if (GetConVarNumber("menumods_enableLogging") != 0) then
+			menumods.CreateLog(exec, ".txt")
+		end
+		
+		menumods.hook.Run("ElementRemoved", "id", id)
+		
+		if (GetConVarNumber("menuMods_debugMode") != 0) then
 			print("Menu Mods: Removed element of ID " .. menumods.string.LevelPush(id, 1) .. ".")
+		end
+	end
+	
+	function self.HTML:RemoveElementByClassName(className, num)
+		local exec = "var objects = document.getElementsByClassName(" .. menumods.string.LevelPush(className, 1) .. ");\nvar object = objects[" .. (num - 1) .. "];\nif (object != undefined) {\nif ((object.parentNode != undefined) && (object.parentNode != null) && (object.id.indexOf(\"menumods_\") != 0)) {\nobject.parentNode.removeChild(object);\n};\n};\n"
+		
+		self:Call(exec)
+		
+		if (GetConVarNumber("menumods_enableLogging") != 0) then
+			menumods.CreateLog(exec, ".txt")
+		end
+		
+		menumods.hook.Run("ElementRemoved", "classname", className, num)
+		
+		if (GetConVarNumber("menuMods_debugMode") != 0) then
+			print("Menu Mods: Removed element of class name " .. menumods.string.LevelPush(className, 1) .. ", occurrence " .. num .. ".")
+		end
+	end
+	
+	function self.HTML:RemoveElementByName(name, num)
+		local exec = "var objects = document.getElementsByName(" .. menumods.string.LevelPush(name, 1) .. ");\nvar object = objects[" .. (num - 1) .. "];\nif (object != undefined) {\nif ((object.parentNode != undefined) && (object.parentNode != null) && (object.id.indexOf(\"menumods_\") != 0)) {\nobject.parentNode.removeChild(object);\n};\n};\n"
+		
+		self:Call(exec)
+		
+		if (GetConVarNumber("menumods_enableLogging") != 0) then
+			menumods.CreateLog(exec, ".txt")
+		end
+		
+		menumods.hook.Run("ElementRemoved", "name", className, num)
+		
+		if (GetConVarNumber("menuMods_debugMode") != 0) then
+			print("Menu Mods: Removed element of name " .. menumods.string.LevelPush(name, 1) .. ", occurrence " .. num .. ".")
+		end
+	end
+	
+	function self.HTML:RemoveElementByTagName(tagName, num)
+		local exec = "var objects = document.getElementsByTagName(" .. menumods.string.LevelPush(tagName, 1) .. ");\nvar object = objects[" .. (num - 1) .. "];\nif (object != undefined) {\nif ((object.parentNode != undefined) && (object.parentNode != null) && (object.id.indexOf(\"menumods_\") != 0)) {\nobject.parentNode.removeChild(object);\n};\n};\n"
+		
+		self:Call(exec)
+		
+		if (GetConVarNumber("menumods_enableLogging") != 0) then
+			menumods.CreateLog(exec, ".txt")
+		end
+		
+		menumods.hook.Run("ElementRemoved", "tagname", className, num)
+		
+		if (GetConVarNumber("menuMods_debugMode") != 0) then
+			print("Menu Mods: Removed element of class name " .. menumods.string.LevelPush(tagName, 1) .. ", occurrence " .. num .. ".")
 		end
 	end
 	
