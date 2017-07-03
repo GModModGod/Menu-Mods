@@ -6,7 +6,7 @@ menumods = {}
 menumods.hook = {}
 menumods.string = {}
 
-function menumods.Include(filename)
+function menumods.include(filename)
 	local exec = CompileString(file.Read(("lua/" .. filename), "GAME"), filename, true)
 	
 	exec()
