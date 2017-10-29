@@ -91,6 +91,7 @@ function menumods.string.LevelPop(str, numLevels)
 	
 	for i = 1, numLevels_new do
 		for k, v in pairs(escChars) do
+			newString = string.gsub(newString, ("[^\\]" .. string.PatternSafe(v)), "")
 			newString = string.Replace(newString, ("\\" .. v), v)
 		end
 	end
