@@ -53,7 +53,6 @@ local escChars = {
 	"\r",
 	"\t",
 	"\v",
-	"\\",
 	"\"",
 	"\'"
 }
@@ -68,6 +67,8 @@ function menumods.string.LevelPush(str, numLevels, noOuterQuotes)
 	local newString = ("" .. str)
 	
 	for i = 1, numLevels_new do
+		newString = string.Replace(newString, "\\", "\\\\")
+		
 		for k, v in pairs(escChars) do
 			newString = string.Replace(newString, v, ("\\" .. v))
 		end
@@ -94,6 +95,8 @@ function menumods.string.LevelPop(str, numLevels)
 			newString = string.gsub(newString, ("[^\\]" .. string.PatternSafe(v)), "")
 			newString = string.Replace(newString, ("\\" .. v), v)
 		end
+		
+		newString = string.Replace(newString, "\\\\", "\\")
 	end
 	
 	return newString
