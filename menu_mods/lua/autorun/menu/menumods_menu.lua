@@ -81,7 +81,7 @@ function menumods.string.LevelPush(str, numLevels, noOuterQuotes)
 	return newString
 end
 
-function HL2SaveSys.string.LevelPop(str, numLevels)
+function menumods.string.LevelPop(str, numLevels)
 	local numLevels_new = numLevels
 	
 	if (not numLevels_new) then
