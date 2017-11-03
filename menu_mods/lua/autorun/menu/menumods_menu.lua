@@ -70,7 +70,7 @@ function menumods.string.LevelPush(str, numLevels, noOuterQuotes)
 		newString = string.Replace(newString, "\\", "\\\\")
 		
 		for k, v in pairs(escChars) do
-			newString = string.Replace(newString, v[1], ("\\" .. v[2]))
+			newString = string.gsub(newString, string.PatternSafe(v[1]), ("\\" .. string.PatternSafe(v[2])))
 		end
 		
 		if (not noOuterQuotes) then
@@ -92,7 +92,7 @@ function menumods.string.LevelPop(str, numLevels)
 	
 	for i = 1, numLevels_new do
 		for k, v in pairs(escChars) do
-			newString = string.gsub(newString, "^[\"\']", "")
+			newString = string.gsub(newString, ("^" .. string.PatternSafe(v[1])), "")
 			newString = string.gsub(newString, ("([^\\])" .. string.PatternSafe(v[1])), "%1")
 			newString = string.Replace(newString, ("\\" .. v[2]), v[1])
 		end
