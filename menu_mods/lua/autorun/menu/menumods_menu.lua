@@ -585,15 +585,6 @@ local function MenuMods_Init(self)
 	
 	function self:UpdateHTML()
 		if self.HTML then
-			if (self.HTML.MenuMods_PrevInGame == nil) then
-				self.HTML.MenuMods_PrevInGame = IsInGame()
-			end
-			
-			if (IsInGame() != self.HTML.MenuMods_PrevInGame) then
-				self.HTML.ShouldRefresh = true
-				self.HTML.MenuMods_PrevInGame = IsInGame()
-			end
-			
 			if (not MenuMods_UpdatingURL) then
 				menumods.hook.Run("PageThink")
 				
@@ -621,6 +612,14 @@ local function MenuMods_Init(self)
 					local v = MenuMods_ElementTables[k]
 					
 					if v then
+						if (not isbool(v.prevDisabled)) then
+							v.prevDisabled = false
+						end
+						
+						if (not isbool(v.prevShow)) then
+							v.prevShow = true
+						end
+						
 						if (not v.disabled) then
 							local show = true
 							
@@ -635,7 +634,7 @@ local function MenuMods_Init(self)
 							end
 							
 							if show then
-								if ((not self.HTML.MenuModsElements[k]) or (self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh) then
+								if ((not self.HTML.MenuModsElements[k]) or (self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh or (not v.prevShow) or (not v.prevDisabled)) then
 									local function handleError( err )
 										print("[ERROR] Menu Mods: Identifier \"" .. k .. "\": " .. err)
 									end
@@ -668,6 +667,9 @@ local function MenuMods_Init(self)
 							
 							self.HTML.MenuModsElements[k] = nil
 						end
+						
+						v.prevDisabled = v.disabled
+						v.prevShow = v.show
 						
 						j = j + 1
 					else
