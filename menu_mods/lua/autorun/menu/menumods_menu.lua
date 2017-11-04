@@ -339,7 +339,7 @@ end
 if (not pnlMainMenu) then return end
 
 local function MenuMods_Init(self)
-	self.HTML.IsRefreshing = true
+	self.HTML.ShouldRefresh = true
 	
 	function self.HTML:CreateElement(identifier, currURL, urls, tag, class, parentClass, searchType, parentNum, onClick, content, ...)
 		local proceed = false
@@ -580,7 +580,7 @@ local function MenuMods_Init(self)
 	end
 	
 	function self.HTML:OnDocumentReady(url)
-		self.IsRefreshing = true
+		self.ShouldRefresh = true
 	end
 	
 	function self:UpdateHTML()
@@ -598,7 +598,7 @@ local function MenuMods_Init(self)
 			end
 			
 			if self.HTML.MenuMods_URL then
-				if ((self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.IsRefreshing) then
+				if ((self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh) then
 					menumods.hook.Run("PrePageChange", self.HTML.MenuMods_PrevURL, self.HTML.MenuMods_URL)
 					
 					MenuMods_IDs = {}
@@ -626,7 +626,7 @@ local function MenuMods_Init(self)
 							end
 							
 							if show then
-								if ((not self.HTML.MenuModsElements[k]) or (self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.IsRefreshing) then
+								if ((not self.HTML.MenuModsElements[k]) or (self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh) then
 									local function handleError( err )
 										print("[ERROR] Menu Mods: Identifier \"" .. k .. "\": " .. err)
 									end
@@ -666,9 +666,9 @@ local function MenuMods_Init(self)
 					end
 				end
 				
-				self.HTML.IsRefreshing = false
+				self.HTML.ShouldRefresh = false
 				
-				if ((self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.IsRefreshing) then
+				if ((self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh) then
 					menumods.hook.Run("PostPageChange", self.HTML.MenuMods_PrevURL, self.HTML.MenuMods_URL)
 				end
 				
