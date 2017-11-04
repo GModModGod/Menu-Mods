@@ -585,6 +585,15 @@ local function MenuMods_Init(self)
 	
 	function self:UpdateHTML()
 		if self.HTML then
+			if (self.HTML.MenuMods_PrevInGame == nil) then
+				self.HTML.MenuMods_PrevInGame = IsInGame()
+			end
+			
+			if (IsInGame() != self.HTML.MenuMods_PrevInGame) then
+				self.HTML.ShouldRefresh = true
+				self.HTML.MenuMods_PrevInGame = IsInGame()
+			end
+			
 			if (not MenuMods_UpdatingURL) then
 				menumods.hook.Run("PageThink")
 				
