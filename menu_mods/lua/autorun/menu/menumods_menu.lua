@@ -634,7 +634,7 @@ local function MenuMods_Init(self)
 							end
 							
 							if show then
-								if ((not self.HTML.MenuModsElements[k]) or (self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh or (not v.prevShow) or (not v.prevDisabled)) then
+								if ((not self.HTML.MenuModsElements[k]) or (self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh or (not v.prevShow) or v.prevDisabled) then
 									local function handleError( err )
 										print("[ERROR] Menu Mods: Identifier \"" .. k .. "\": " .. err)
 									end
