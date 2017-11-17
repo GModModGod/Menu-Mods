@@ -230,7 +230,7 @@ function menumods.AddLuaOption(identifier, data, callback)
 	newData.tag = "A"
 	newData.callback = callback
 	
-	newData.onClick = "lua.Run(\"menumods.ExecuteElementCallback(\\\"" .. menumods.string.LevelPush(identifier, 2, true) .. "\\\")\")"
+	newData.onClick = "lua.Run(\"menumods.ExecuteElementCallback(\\\"" .. menumods.string.LevelPush(("" .. identifier), 2, true) .. "\\\")\")"
 	
 	table.insert(newData.attributes, (#newData.attributes + 1), {"href", "#/"})
 	
@@ -240,7 +240,7 @@ function menumods.AddLuaOption(identifier, data, callback)
 end
 
 function menumods.ExecuteElementCallback(identifier)
-	if MenuMods_ElementTables["" .. identifier] then return end
+	if (not MenuMods_ElementTables["" .. identifier]) then return end
 	
 	return MenuMods_ElementTables["" .. identifier].callback()
 end
