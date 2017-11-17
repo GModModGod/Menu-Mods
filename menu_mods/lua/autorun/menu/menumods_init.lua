@@ -41,17 +41,6 @@ end
 
 hook.Add("CloseDermaMenus", "MenuMods_SaveConVars", SaveConVars)
 
-if (not pnlMainMenu) then return end
-
-local PanelOnRemove_Old = pnlMainMenu.OnRemove
-local PanelOnRemove = PanelOnRemove_Old
-
-pnlMainMenu.OnRemove = function(self)
-	SaveConVars()
-	
-	return PanelOnRemove(self)
-end
-
 local FileBlacklist = {
 	["lua/vgui/spawnicon.lua"] = true
 }
@@ -116,8 +105,8 @@ Mount()
 
 hook.Add("GameContentChanged", "MenuMods_GameContentChanged", Mount)
 
-if file.Exists("menumods/convars.lua", "DATA") then
-	local JSON = file.Read("menumods/convars.lua", "DATA")
+if file.Exists("menumods/convars.txt", "DATA") then
+	local JSON = file.Read("menumods/convars.txt", "DATA")
 	
 	local conVarTab = util.JSONToTable(JSON)
 	
