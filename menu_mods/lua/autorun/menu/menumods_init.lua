@@ -99,6 +99,10 @@ local function Mount()
 			end
 		end
 	end
+	
+	if MenuMods_Initialized then
+		menumods.hook.Run("Initialize")
+	end
 end
 
 Mount()
