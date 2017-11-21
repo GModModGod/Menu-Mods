@@ -104,7 +104,7 @@ function HTMLDocs.base_html:OpenInPanel(HTML)
 	
 	HTML:OpenURL("asset://garrysmod/html/blank.html")
 	
-	local exec = "document.head.innerHTML = \"" .. menumods.string.LevelPush(self.Head, 1, true) .. "\";\ndocument.body.innerHTML = \"" .. menumods.string.LevelPush(self.Body, 1, true) .. "\";\nvar allElements = document.GetElementsByTagName(\"*\");\nvar currIndex;\nfor (currIndex in allElements) {\nvar currElement = allElements[currIndex];\nif (currElement.hasAttribute(\"lua-href\")) {\ncurrElement.setAttribute(\"href\", \"#/\");\ncurrElement.addEventListener(\"click\", function(){\nlua.Run(\"local document = luahtml.GetByIndex(" .. self.UniqueID .. ")\\nif document:IsValid() then\\ndocument:OpenNewInCurrentPanel(menumods.string.LevelPush(\\\"\" + currElement.getAttribute(\"lua-href\") + \"\\\", 1, true))\\nend\");\n});\n}\n}"
+	local exec = "document.head.innerHTML = \"" .. menumods.string.LevelPush(self.Head, 1, true) .. "\";\ndocument.body.innerHTML = \"" .. menumods.string.LevelPush(self.Body, 1, true) .. "\";\nvar allElements = document.GetElementsByTagName(\"*\");\nvar currIndex;\nfor (currIndex in allElements) {\nvar currElement = allElements[currIndex];\nif (currElement.hasAttribute(\"lua-href\")) {\ncurrElement.setAttribute(\"href\", \"#/\");\ncurrElement.addEventListener(\"click\", function(){\nlua.Run(\"local document = luahtml.GetByIndex(" .. self.UniqueID .. ")\\nif document:IsValid() then\\ndocument:OpenNewInCurrentPanel(menumods.string.LevelPush(\\\"\" + currElement.getAttribute(\"lua-href\") + \"\\\", 1, true))\\nend\");\n});\n}\nif ((currElement.tagName === \"SCRIPT\") && (currElement.hasAttribute(\"lua-src\"))) {\nlua.Run(\"local document = luahtml.GetByIndex(" .. self.UniqueID .. ")\\nif document:IsValid() then\\ndocument:RunScript(menumods.string.LevelPush(\\\"\" + currElement.getAttribute(\"lua-src\") + \"\\\", 1, true))\\nend\");\n}\n}"
 	
 	HTML:Call(exec)
 end
@@ -122,6 +122,21 @@ function HTMLDocs.base_html:OpenNewInCurrentPanel(class, doNotRemove)
 	local newDoc = luahtml.Create(class)
 	
 	newDoc:OpenInPanel(newPanel)
+end
+
+function HTMLDocs.base_html:RunScript(class, doNotRemove)
+	if (not self.CurrentPanel) then return end
+	if (not self.CurrentPanel:IsValid()) then return end
+	
+	local newPanel = self.CurrentPanel
+	
+	local script = luajs.Create(class)
+	
+	script:RunInPanel(newPanel)
+	
+	if (not doNotRemove) then
+		script:Remove()
+	end
 end
 
 function HTMLDocs.base_html:GetCurrentPanel()
