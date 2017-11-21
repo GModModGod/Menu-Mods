@@ -45,7 +45,7 @@ function JSDocs.base_js:Remove()
 	end
 	
 	self.Removing = true
-	AllSaveDatas[self.UniqueID] = nil
+	AllJSDocs[self.UniqueID] = nil
 	self:OnRemove()
 	
 	AllJSDocsCount = AllJSDocsCount - 1
