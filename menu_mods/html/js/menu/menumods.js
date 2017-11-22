@@ -37,8 +37,8 @@ var menumods =
 				var escChars = menumods.string.escChars;
 				
 				for (k in escChars) {
-					var pattern1 = new RegExp(menumods.string.patternSafe(escChars[k][0]), "g")
-					var pattern2 = "\\" + menumods.string.patternSafe(escChars[k][1])
+					var pattern1 = new RegExp(menumods.string.patternSafe(escChars[k][0]), "g");
+					var pattern2 = "\\" + menumods.string.patternSafe(escChars[k][1]);
 					
 					newString = newString.replace(pattern1, pattern2);
 				}
