@@ -14,3 +14,7 @@ The class names of these locations can be seen in the diagram below.
 
 ![Main Menu Diagram](/tutorials/images/Main_Menu_Diagram.png?raw=true "Main Menu Diagram")
 
+Refer to the diagram for further instruction.
+
+# Different Methods
+
