@@ -6,3 +6,6 @@ learning how to add custom menu options to the main menu and pause menu.
 
 # Choosing a Location for Your Menu Option
 
+For adding an option to the Garry's Mod menu, Menu Mods offers almost every location on the menu.
+The class names of these locations can be seen in the diagram below.
+
