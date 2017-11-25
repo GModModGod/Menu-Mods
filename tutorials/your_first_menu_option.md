@@ -9,3 +9,4 @@ learning how to add custom menu options to the main menu and pause menu.
 For adding an option to the Garry's Mod menu, Menu Mods offers almost every location on the menu.
 The class names of these locations can be seen in the diagram below.
 
+![Main Menu Diagram](/tutorials/images/Main_Menu_Diagram.png?raw=true "Menu Mods Logo")
