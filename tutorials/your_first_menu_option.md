@@ -5,7 +5,7 @@ learning how to add custom menu options to the main menu and pause menu.
 
 # Preparing Your Autorun File
 
-Place a blank .lua file into the "lua/autorun/menu" directory of your addon. This will be the file containing the code for your menu option.
+Place a blank .lua file with a unique name into the "lua/autorun/menu" directory of your addon. This will be the file containing the code for your menu option.
 
 # Choosing a Location for Your Menu Option
 
