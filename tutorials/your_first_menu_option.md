@@ -22,3 +22,5 @@ There are three main functions used to add HTML tags to different parts of the p
 
 Key | Value Type | Purpose
 --- | ---------- | -------
+urls | table | Determines which pages this element should be added to.
+tag | string | Determines the type of HTML tag the element is. Unlike html, the tag name should be in all caps. (Ex. "A" for a `<a>` tag, "P" for a `<p>` tag, etc.)
