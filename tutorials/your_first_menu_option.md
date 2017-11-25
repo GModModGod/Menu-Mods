@@ -12,5 +12,5 @@ Place a blank .lua file with a unique name into the "lua/autorun/menu" directory
 For adding an option to the Garry's Mod menu, Menu Mods offers almost every location on the screen.
 The class names of these locations can be seen in the diagram below.
 
-![Main Menu Diagram](/tutorials/images/Main_Menu_Diagram.png?raw=true "Menu Mods Logo")
+![Main Menu Diagram](/tutorials/images/Main_Menu_Diagram.png?raw=true "Main Menu Diagram")
 
