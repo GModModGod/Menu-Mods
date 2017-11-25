@@ -20,3 +20,5 @@ Refer to the diagram for further instruction.
 
 There are three main functions used to add HTML tags to different parts of the page, the last two of which are specific to `<a>` tags. Each of these functions uses the data structure shown below.
 
+Key | Value Type | Purpose
+--- | ---------- | -------
