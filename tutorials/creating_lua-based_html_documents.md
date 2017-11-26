@@ -55,6 +55,14 @@ Returns:
 
 - string head: The HTML head of the object.
 
+### LUA_HTML:SetHead(head)
+
+Sets the HTML head of the object.
+
+Arguments:
+
+- string head: The new HTML head for the object.
+
 ### LUA_HTML:GetBody()
 
 Returns the HTML body of the object.
@@ -62,6 +70,33 @@ Returns the HTML body of the object.
 Returns:
 
 - string body: The HTML body of the object.
+
+### LUA_HTML:SetBody(body)
+
+Sets the HTML body of the object.
+
+Arguments:
+
+- string body: The new HTML body for the object.
+
+### LUA_HTML:OpenInPanel(HTML)
+
+Opens the document in a DHTML panel.
+
+Arguments:
+
+- Panel HTML: The DHTML panel to open the document in.
+
+### LUA_HTML:OpenNewInCurrentPanel(class, doNotRemove)
+
+Opens a new document in this document's current panel.
+
+Arguments:
+
+- string class: The class name of the new document.
+- boolean doNotRemove: Set to true to not remove this document when opening the other one.
+
+### LUA_HTML:
 
 ## Optional Custom Object Functions
 
