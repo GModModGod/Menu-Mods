@@ -7,6 +7,8 @@ learning how to add custom menu options to the main menu and pause menu.
 
 Place a blank .lua file with a unique name into the "lua/autorun/menu" directory of your addon. This will be the file containing the code for your menu option.
 
+IMPORTANT: If you would like to include the contents of an outside file, use the "menumods.include" function in place of the regular "include" function. (The "include" function will crash the game, saying the file is not found.) The "menumods.include" function also does not support local file paths, so replace any local file paths with the full Lua file path. Example: If you are including the .lua file "lua/autorun/stuff/test.lua" from another file, type `menumods.include("autorun/stuff/test.lua")` in the desired location.
+
 ## Choosing a Location for Your Menu Option
 
 For adding an option to the Garry's Mod menu, Menu Mods offers almost every location on the screen.
