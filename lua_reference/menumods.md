@@ -226,3 +226,11 @@ Runs an event exclusive to Menu Mods. The event is like a regular gamemode event
 Arguments:
 
 - string eventName: The event name.
+
+### menumods.hook.GetTable()
+
+Returns a table of all Menu Mods hooks.
+
+Returns:
+
+- table tab: The table of hooks.
