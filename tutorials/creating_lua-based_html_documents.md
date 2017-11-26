@@ -96,7 +96,22 @@ Arguments:
 - string class: The class name of the new document.
 - boolean doNotRemove: Set to true to not remove this document when opening the other one.
 
-### LUA_HTML:
+### LUA_HTML:RunScript(class, doNotRemove)
+
+Runs a Lua-based script in this document's current panel.
+
+Arguments:
+
+- string class: The class name of the new script.
+- boolean doNotRemove: Set to true to not remove the script just after running it.
+
+### LUA_HTML:GetCurrentPanel()
+
+Returns the current panel of the document.
+
+Returns:
+
+- panel currentpanel: The current panel the document was opened in.
 
 ## Optional Custom Object Functions
 
