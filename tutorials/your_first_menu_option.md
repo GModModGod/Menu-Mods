@@ -69,4 +69,4 @@ attributes | table | Determines the HTML attributes of the element. It is a tabl
 
 ## Finishing Up
 
-After writing your code, save the file, copy your addon into your addons directory, and test it.
+After writing your code, save the file, copy your addon into your addons directory, and test it. If there are any errors, they will show up in the console.
