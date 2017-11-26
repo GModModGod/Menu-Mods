@@ -15,5 +15,32 @@ If you would not like to start from scratch, type `LUA_HTML.Base = "BASE CLASS N
 For the head of your document, type `LUA_HTML.Head = [[HTML HEAD HERE]]`.
 Next, type `LUA_HTML.Body = [[HTML BODY HERE]]` to set the body of your document.
 
-## Optional Custom Functions
+## Object Functions
 
+The following are functions that can be used to do certain things with the document.
+
+
+
+## Optional Custom Object Functions
+
+The following are customizable functions that are called whenever certain events happen.
+
+### LUA_HTML:Initialize()
+
+Called when the document is first created.
+
+### LUA_HTML:OnRemove()
+
+Called when the document is removed with its `LUA_HTML:Remove()` function.
+
+### LUA_HTML:OnOpenInPanel(HTML)
+
+Called when the document is opened in a DHTML panel.
+
+Arguments:
+
+- Panel HTML: The DHTML panel the document was opened in.
+
+### LUA_HTML:OnRunScript(script)
+
+Called when a Lua-based script (written in JavaScript) is executed on the document.
