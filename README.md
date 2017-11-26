@@ -1,5 +1,9 @@
 ![Menu Mods Logo](/Menu_Mods_Logo.png?raw=true "Menu Mods Logo")
 
+# About
+
+Menu Mods is a framework for Garry's Mod that allows the user to modify the main and pause menus. The user can add Lua code that is executed in the menu state of the game, and even add options to the menu.
+
 # Getting Started
 
 Installation Instructions:
