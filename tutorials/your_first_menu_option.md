@@ -69,7 +69,7 @@ onClick | string (function when used in "menumods.AddLuaOption") | Determines th
 content | string | Determines the inner HTML content of the element.
 attributes | table | Determines the HTML attributes of the element. It is a table of tables of strings. Example: For setting the "src", "w", and "h" attributes on an `<img>` tag, this value can be set to `{{"src", "path/to/image"}, {"w", 512}, {"h", 512}}`.
 show | function | Determines whether or not to show the element by returning a boolean value. It is called every tick and has no arguments. Can also be a boolean.
-disabled | boolean | Determines whether or not the element is disabled. Is altered with the functions "menumods.RemoveElementFromPage" and "menumods.ReAddExistingElement".
+disabled | boolean | Determines whether or not the element is disabled. Can be changed with the functions "menumods.RemoveElementFromPage" and "menumods.ReAddExistingElement".
 
 ## Finishing Up
 
