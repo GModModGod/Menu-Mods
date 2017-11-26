@@ -78,7 +78,7 @@ A function that is used internally to execute the callbacks of custom HTML eleme
 
 Arguments:
 
-- any identifier: The identifier of the HTML element.
+- string identifier: The identifier of the HTML element.
 
 ### menumods.RemoveElementFromPage(identifier)
 
@@ -86,7 +86,7 @@ Removes the custom HTML element with the specified identifier from the menu by d
 
 Arguments:
 
-- any identifier: The identifier of the HTML element.
+- string identifier: The identifier of the HTML element.
 
 ### menumods.RemoveElement(identifier)
 
@@ -94,7 +94,7 @@ Permenantly removes a custom HTML element from the global table, requiring the u
 
 Arguments:
 
-- any identifier: The identifier of the HTML element.
+- string identifier: The identifier of the HTML element.
 
 ### menumods.RemoveHTMLElement(searchType, search)
 
@@ -104,3 +104,70 @@ Arguments:
 
 - string searchType: Determines which property is being searched with the parentClass value (or class value for modifying existing elements). All possible values are "classname", "id", "menumodsid" (searches for an id specific to Menu Mods), "name", and "tagname".
 - string search: The search entry to match the property to. Can also be a number when using "id" or "menumodsid" as searchType.
+
+### menumods.ReAddExistingElement(identifier)
+
+Re-adds a disabled custom HTML element by re-enabling it.
+
+Arguments:
+
+- string identifier: The identifier of the HTML element.
+
+### menumods.ElementExists(identifier)
+
+Returns if the specified element exists, disabled or not.
+
+Arguments:
+
+- string identifier: The identifier of the HTML element.
+
+Returns:
+
+- boolean exists: Whether or not the element exists.
+
+### menumods.GetElement(identifier)
+
+Returns the original table of the custom HTML element with the specified identifier.
+
+Arguments:
+
+- string identifier: The identifier of the HTML element.
+
+Returns:
+
+- table tab: The table of the element.
+
+### menumods.GetElementNameByID(id)
+
+Returns the identifier of the custom HTML element with the specified index.
+
+Arguments:
+
+- number index: The index of the HTML element.
+
+Returns:
+
+- string identifier: The identifier of the HTML element.
+
+### menumods.GetActiveElementTable()
+
+Returns a table of all enabled custom HTML elements.
+
+Returns:
+
+- table tab: The table of elements.
+
+### menumods.GetElementTable()
+
+Returns a table of all custom HTML elements, enabled or not.
+
+Returns:
+
+- table tab: The table of elements.
+
+### menumods.RunJavaScript(str)
+
+Runs JavaScript code on the main DHTML panel.
+
+## menumods.string
+
