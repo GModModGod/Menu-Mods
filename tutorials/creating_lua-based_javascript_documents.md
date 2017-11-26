@@ -106,3 +106,7 @@ Called when the script is ran in a DHTML panel.
 Arguments:
 
 - Panel HTML: The DHTML panel the script was run in.
+
+## Finishing Up
+
+After writing your code, save the file, copy your addon into your addons directory, and test it. If there are any errors, they will show up in the console.
