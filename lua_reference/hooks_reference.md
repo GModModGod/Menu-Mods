@@ -56,3 +56,17 @@ Arguments:
 
 - oldURL: The old URL.
 - newURL: The new URL.
+
+### PageThink()
+
+Called when the page thinks.
+
+### Think()
+
+Called when the main panel thinks.
+
+IMPORTANT: When running JavaScript inside a thinking hook, use "PageThink" instead. Otherwise, the JavaScript queue will grow faster than the code can be executed, resulting in increasing lag.
+
+### Initialize()
+
+Called when Menu Mods initializes.
