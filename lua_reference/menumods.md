@@ -71,3 +71,19 @@ Arguments:
 - any identifier: Used as a unique name for the element (like gamemode hooks).
 - table data: The data table for the element.
 - function callback: The Lua function to be executed when the option is clicked. It has no arguments.
+
+### menumods.ExecuteElementCallback(identifier)
+
+A function that is used internally to execute the callbacks of custom HTML elements when they are clicked.
+
+Arguments:
+
+- any identifier: The identifier of the HTML element.
+
+### menumods.RemoveElementFromPage(identifier)
+
+Removes the custom HTML element with the specified identifier from the menu by disabling it.
+
+Arguments:
+
+- any identifier: The identifier of the HTML element.
