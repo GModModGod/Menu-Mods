@@ -29,7 +29,7 @@ Returns:
 
 ### LUA_HTML:Index()
 
-Gets the unique index of the object.
+Returns the unique index of the object.
 
 Returns:
 
@@ -41,7 +41,27 @@ Removes the object, making it no longer valid or useable.
 
 ### LUA_HTML:GetClass()
 
+Returns the class name of the object.
 
+Returns:
+
+- string classname: The class name of the object.
+
+### LUA_HTML:GetHead()
+
+Returns the HTML head of the object.
+
+Returns:
+
+- string head: The HTML head of the object.
+
+### LUA_HTML:GetBody()
+
+Returns the HTML body of the object.
+
+Returns:
+
+- string body: The HTML body of the object.
 
 ## Optional Custom Object Functions
 
