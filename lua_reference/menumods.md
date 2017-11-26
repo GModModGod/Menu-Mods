@@ -87,3 +87,20 @@ Removes the custom HTML element with the specified identifier from the menu by d
 Arguments:
 
 - any identifier: The identifier of the HTML element.
+
+### menumods.RemoveElement(identifier)
+
+Permenantly removes a custom HTML element from the global table, requiring the user to restart Garry's Mod for it to be added again.
+
+Arguments:
+
+- any identifier: The identifier of the HTML element.
+
+### menumods.RemoveHTMLElement(searchType, search)
+
+Removes the first found HTML element that matches the search.
+
+Arguments:
+
+- string searchType: Determines which property is being searched with the parentClass value (or class value for modifying existing elements). All possible values are "classname", "id", "menumodsid" (searches for an id specific to Menu Mods), "name", and "tagname".
+- string search: The search entry to match the property to. Can also be a number when using "id" or "menumodsid" as searchType.
