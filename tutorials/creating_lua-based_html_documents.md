@@ -8,7 +8,7 @@ Place a blank .lua file with a unique name into the "lua/htmldocs" directory of 
 
 ## Setting the Base Class
 
-If you would not like to start from scratch, type `LUA_HTML.Base = "BASE NAME HERE"` in your file to set the desired base for your document.
+If you would not like to start from scratch, type `LUA_HTML.Base = "BASE CLASS NAME HERE"` in your file to set the desired base class for your document.
 
 ## Creating the Head and Body
 
