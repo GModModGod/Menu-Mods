@@ -44,3 +44,7 @@ Arguments:
 ### LUA_HTML:OnRunScript(script)
 
 Called when a Lua-based script (written in JavaScript) is executed on the document.
+
+Arguments:
+
+- LuaJS script: The Lua-based script that was executed on the document.
