@@ -18,11 +18,11 @@ local MenuMods_Hooks = {}
 local MenuMods_IDs = {}
 
 function menumods.CreateLog(content, extension)
-	if (not file.IsDir("menu_mods_data", "DATA")) then
-		file.CreateDir("menu_mods_data")
+	if (not file.IsDir("menu_mods", "DATA")) then
+		file.CreateDir("menu_mods")
 	end
-	if (not file.IsDir("menu_mods_data/logs", "DATA")) then
-		file.CreateDir("menu_mods_data/logs")
+	if (not file.IsDir("menu_mods/logs", "DATA")) then
+		file.CreateDir("menu_mods/logs")
 	end
 	
 	local currID = 0
@@ -33,7 +33,7 @@ function menumods.CreateLog(content, extension)
 	while (not found) do
 		currID = currID + 1
 		
-		filename = ("menu_mods_data/logs/log_" .. currID .. extension)
+		filename = ("menu_mods/logs/log_" .. currID .. extension)
 		
 		if (not file.Exists(filename, "DATA")) then
 			found = true
