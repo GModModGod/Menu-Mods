@@ -171,3 +171,30 @@ Runs JavaScript code on the main DHTML panel.
 
 ## menumods.string
 
+### menumods.string.LevelPush(str, numLevels, noOuterQuotes)
+
+Escapes a string a certain number of times.
+
+Arguments:
+
+- string str: The string to escape.
+- number numLevels: The number of times to escape the string. Default is 1.
+- boolean noOuterQuotes: When set to false or nil, the function will add outer quotes to the string every time it is escaped.
+
+Returns:
+
+- string str: The escaped string.
+
+### menumods.string.LevelPop(str, numLevels)
+
+De-escapes a string a certain number of times.
+
+Arguments:
+
+- string str: The string to de-escape.
+- number numLevels: The number of times to de-escape the string. Default is 1.
+
+Returns:
+
+- string str: The de-escaped string.
+
