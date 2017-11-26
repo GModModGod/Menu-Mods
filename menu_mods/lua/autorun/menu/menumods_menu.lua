@@ -1,6 +1,6 @@
 
 CreateConVar("menuMods_debugMode", 0, FCVAR_ARCHIVE)
-CreateConVar("menumods_enableLogging", 0, FCVAR_ARCHIVE)
+CreateConVar("menuMods_enableLogging", 0, FCVAR_ARCHIVE)
 
 menumods = {}
 menumods.hook = {}
