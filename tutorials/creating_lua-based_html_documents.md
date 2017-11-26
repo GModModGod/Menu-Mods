@@ -19,6 +19,28 @@ Next, type `LUA_HTML.Body = [[HTML BODY HERE]]` to set the body of your document
 
 The following are functions that can be used to do certain things with the document.
 
+### LUA_HTML:IsValid()
+
+Checks to see if the object is valid.
+
+Returns:
+
+- bool isvalid: Whether or not the object is valid.
+
+### LUA_HTML:Index()
+
+Gets the unique index of the object.
+
+Returns:
+
+- number index: The unique index of the object.
+
+### LUA_HTML:Remove()
+
+Removes the object, making it no longer valid or useable.
+
+### LUA_HTML:GetClass()
+
 
 
 ## Optional Custom Object Functions
