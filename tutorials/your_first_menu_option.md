@@ -22,8 +22,9 @@ There are three main functions used to add HTML tags to different parts of the p
 
 Key | Value Type | Purpose
 --- | ---------- | -------
-urls | table | Determines which pages this element should be added to.
+urls | table | Determines which pages this element should be added to. It is a table of strings.
 tag | string | Determines the type of HTML tag the element is. Unlike html, the tag name should be in all caps. (Ex. "A" for a `<a>` tag, "P" for a `<p>` tag, etc.)
+modifyExisting | boolean | Determines whether this data should be used to modify an existing element (true), or should be used to add a new one (false or nil).
 class | string | Determines the class name of the object, which can be used for identifying it. It should be a unique value unless there is a specific reason for it being otherwise.
 parentClass | string | Determines the class name (or tag name, or some other property if specified) that should be searched to find a parent for the new element.
 searchType | string | Determines which property is being searched with the parentClass value (or class value for modifying existing elements). All possible values are "classname", "id", "menumodsid" (searches for an id specific to Menu Mods), "name", and "tagname".
@@ -31,3 +32,4 @@ parentNum | number | Determines which element to parent the new element to. (1 i
 num | number | Determines which element to modify. (1 is the first element found, 2 is the second element found, etc.) This value is exclusive to modifying existing elements. (modifyExisting must be set to true.)
 onClick | string (function when used in "menumods.AddLuaOption") | Determines the action taken when the element is clicked by the cursor. If it is a string, this action is written in JavaScript. If it is a function, it is written in Lua.
 content | string | Determines the inner HTML content of the element.
+attributes | table | Determines the HTML attributes of the element. It is a table of tables of strings. Ex. For setting the "src", "w", and "h" attributes on an `<img>` tag, this value can be set to `{{"src", "path/to/image"}, {"w", 512}, {"h", 512}}`.
