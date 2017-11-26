@@ -14,3 +14,7 @@ Once downloaded, place the folder named "menu_mods" inside the "addons" folder i
 - [Your First Menu Option](/tutorials/your_first_menu_option.md "Your First Menu Option")
 - [Creating Lua-Based HTML Documents](/tutorials/creating_lua-based_html_documents.md "Creating Lua-Based HTML Documents")
 - [Creating Lua-Based JavaScript Documents](/tutorials/creating_lua-based_javascript_documents.md "Creating Lua-Based JavaScript Documents")
+
+## References
+
+- [Lua Reference](/lua_reference/ROOT.md "Lua Reference")
