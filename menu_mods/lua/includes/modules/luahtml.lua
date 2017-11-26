@@ -84,6 +84,14 @@ function HTMLDocs.base_html:SetBody(body)
 	self.Body = body
 end
 
+function HTMLDocs.base_html:OnOpenInPanel(HTML)
+	
+end
+
+function HTMLDocs.base_html:OnRunScript(script)
+	
+end
+
 function HTMLDocs.base_html:OpenInPanel(HTML)
 	if (self.CurrentPanel and self.CurrentPanel:IsValid()) then
 		local newDoc = luahtml.Create(self.ClassName)
@@ -107,6 +115,8 @@ function HTMLDocs.base_html:OpenInPanel(HTML)
 	local exec = "document.head.innerHTML = document.head.innerHTML + \"" .. menumods.string.LevelPush(self.Head, 1, true) .. "\";\ndocument.body.innerHTML = document.body.innerHTML + \"" .. menumods.string.LevelPush(self.Body, 1, true) .. "\";\nvar allElements = document.getElementsByTagName(\"*\");\nvar currIndex;\nfor (currIndex in allElements) {\nvar currElement = allElements[currIndex];\nif ((currElement.hasAttribute != undefined) && (currElement.getAttribute != undefined)) {\nif (currElement.hasAttribute(\"lua-href\")) {\ncurrElement.setAttribute(\"href\", \"asset://garrysmod/html/blank.html\");\ncurrElement.addEventListener(\"click\", function(){\nlua.Run(\"local document = luahtml.GetByIndex(" .. self.UniqueID .. ")\\nif document:IsValid() then\\ndocument:OpenNewInCurrentPanel(\\\"\" + menumods.string.levelPush(this.getAttribute(\"lua-href\"), 1, true) + \"\\\")\\nend\");\n});\n}\nif ((currElement.tagName === \"SCRIPT\") && (currElement.hasAttribute(\"lua-src\"))) {\nlua.Run(\"local document = luahtml.GetByIndex(" .. self.UniqueID .. ")\\nif document:IsValid() then\\ndocument:RunScript(\\\"\" + menumods.string.levelPush(currElement.getAttribute(\"lua-src\"), 1, true) + \"\\\")\\nend\");\n}\n}\n}\n"
 	
 	HTML:Call(exec)
+	
+	self:OnOpenInPanel(HTML)
 end
 
 function HTMLDocs.base_html:OpenNewInCurrentPanel(class, doNotRemove)
@@ -133,6 +143,8 @@ function HTMLDocs.base_html:RunScript(class, doNotRemove)
 	local script = luajs.Create(class)
 	
 	script:RunInPanel(newPanel)
+	
+	self:OnRunScript(script)
 	
 	if (not doNotRemove) then
 		script:Remove()

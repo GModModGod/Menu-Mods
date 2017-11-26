@@ -73,6 +73,10 @@ function JSDocs.base_js:SetContent(content)
 	self.Content = content
 end
 
+function JSDocs.base_js:OnRunInPanel(HTML)
+	
+end
+
 function JSDocs.base_js:RunInPanel(HTML)
 	if (self.CurrentPanel and self.CurrentPanel:IsValid()) then
 		local newDoc = luajs.Create(self.ClassName)
@@ -90,6 +94,8 @@ function JSDocs.base_js:RunInPanel(HTML)
 	if (not self:IsValid()) then return end
 	
 	HTML:Call(self.Content)
+	
+	self:OnRunInPanel(HTML)
 end
 
 function JSDocs.base_js:RunNewInCurrentPanel(class, doNotRemove)
