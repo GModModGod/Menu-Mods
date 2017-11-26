@@ -51,7 +51,7 @@ Arguments:
 
 ## Data Structure
 
-The functions used to add HTML elements to the page use the data structure shown below.
+The functions used to add HTML elements to the page use the data structure shown below as the "data" argument.
 
 Key | Value Type | Purpose
 --- | ---------- | -------
