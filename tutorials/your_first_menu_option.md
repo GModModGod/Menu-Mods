@@ -14,11 +14,11 @@ The class names of these locations can be seen in the diagram below.
 
 ![Main Menu Diagram](/tutorials/images/Main_Menu_Diagram.png?raw=true "Main Menu Diagram")
 
-Refer to the diagram for further instruction.
+Refer to this diagram for further instruction.
 
-## Different Methods
+## Data Structure
 
-There are three main functions used to add HTML tags to different parts of the page, the last two of which are specific to `<a>` tags. Each of these functions uses the data structure shown below.
+The functions used to add HTML elements to the page use the data structure shown below.
 
 Key | Value Type | Purpose
 --- | ---------- | -------
@@ -33,3 +33,7 @@ num | number | Determines which element to modify. (1 is the first element found
 onClick | string (function when used in "menumods.AddLuaOption") | Determines the action taken when the element is clicked by the cursor. If it is a string, this action is written in JavaScript. If it is a function, it is written in Lua.
 content | string | Determines the inner HTML content of the element.
 attributes | table | Determines the HTML attributes of the element. It is a table of tables of strings. Example: For setting the "src", "w", and "h" attributes on an `<img>` tag, this value can be set to `{{"src", "path/to/image"}, {"w", 512}, {"h", 512}}`.
+
+## Different Methods
+
+There are three main functions used to add HTML tags to different parts of the page, the last two of which are specific to `<a>` tags. 
