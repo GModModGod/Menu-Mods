@@ -42,3 +42,32 @@ Arguments:
 - number id: The index to remove the identifier from.
 
 IMPORTANT: It is highly recommended to refrain from using this function to create luahtml classes unless there is a specific reason for doing so.
+
+### menumods.AddElement(identifier, data)
+
+This function can be used to add any HTML tag to the menu.
+
+Arguments:
+
+- any identifier: Used as a unique name for the element (like gamemode hooks).
+- table data: The data table for the element.
+
+### menumods.AddOption(identifier, data, onClick)
+
+This function is used to add options to the menu that execute code when clicked.
+
+Arguments:
+
+- any identifier: Used as a unique name for the element (like gamemode hooks).
+- table data: The data table for the element.
+- string onClick: The JavaScript code to be executed when the option is clicked.
+
+### menumods.AddLuaOption(identifier, data, callback)
+
+This function is used to add options to the menu that execute code when clicked.
+
+Arguments:
+
+- any identifier: Used as a unique name for the element (like gamemode hooks).
+- table data: The data table for the element.
+- function callback: The Lua function to be executed when the option is clicked. It has no arguments.
