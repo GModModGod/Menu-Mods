@@ -12,8 +12,8 @@ If you would not like to start from scratch, type `LUA_HTML.Base = "BASE NAME HE
 
 ## Creating the Head and Body
 
-For the head of your document, type `LUA_HTML.Head = "HTML HEAD HERE"`.
-Next, type `LUA_HTML.Body = "HTML BODY HERE"` to set the body of your document.
+For the head of your document, type `LUA_HTML.Head = [[HTML HEAD HERE]]`.
+Next, type `LUA_HTML.Body = [[HTML BODY HERE]]` to set the body of your document.
 
 ## Optional Custom Functions
 
