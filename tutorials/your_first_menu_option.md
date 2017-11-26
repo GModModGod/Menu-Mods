@@ -16,6 +16,39 @@ The class names of these locations can be seen in the diagram below.
 
 Refer to this diagram for further instruction.
 
+## Different Methods
+
+There are three main functions used to add HTML tags to different parts of the page, the last two of which are specific to `<a>` tags. 
+
+### menumods.AddElement(identifier, data)
+
+This function can be used to add any HTML tag to the menu.
+
+Arguments:
+
+- any identifier: Used as a unique name for the element (like gamemode hooks).
+- table data: The data table for the element.
+
+### menumods.AddOption(identifier, data, onClick)
+
+This function is used to add options to the menu that execute code when clicked.
+
+Arguments:
+
+- any identifier: Used as a unique name for the element (like gamemode hooks).
+- table data: The data table for the element.
+- string onClick: The JavaScript code to be executed when the option is clicked.
+
+### menumods.AddLuaOption(identifier, data, callback)
+
+This function is used to add options to the menu that execute code when clicked.
+
+Arguments:
+
+- any identifier: Used as a unique name for the element (like gamemode hooks).
+- table data: The data table for the element.
+- function callback: The Lua function to be executed when the option is clicked. It has no arguments.
+
 ## Data Structure
 
 The functions used to add HTML elements to the page use the data structure shown below.
@@ -33,7 +66,3 @@ num | number | Determines which element to modify. (1 is the first element found
 onClick | string (function when used in "menumods.AddLuaOption") | Determines the action taken when the element is clicked by the cursor. If it is a string, this action is written in JavaScript. If it is a function, it is written in Lua.
 content | string | Determines the inner HTML content of the element.
 attributes | table | Determines the HTML attributes of the element. It is a table of tables of strings. Example: For setting the "src", "w", and "h" attributes on an `<img>` tag, this value can be set to `{{"src", "path/to/image"}, {"w", 512}, {"h", 512}}`.
-
-## Different Methods
-
-There are three main functions used to add HTML tags to different parts of the page, the last two of which are specific to `<a>` tags. 
