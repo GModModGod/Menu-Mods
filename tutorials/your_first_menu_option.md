@@ -66,3 +66,7 @@ num | number | Determines which element to modify. (1 is the first element found
 onClick | string (function when used in "menumods.AddLuaOption") | Determines the action taken when the element is clicked by the cursor. If it is a string, this action is written in JavaScript. If it is a function, it is written in Lua.
 content | string | Determines the inner HTML content of the element.
 attributes | table | Determines the HTML attributes of the element. It is a table of tables of strings. Example: For setting the "src", "w", and "h" attributes on an `<img>` tag, this value can be set to `{{"src", "path/to/image"}, {"w", 512}, {"h", 512}}`.
+
+## Finishing Up
+
+After writing your code, save the file, copy your addon into your addons directory, and test it.
