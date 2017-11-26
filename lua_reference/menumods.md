@@ -198,3 +198,31 @@ Returns:
 
 - string str: The de-escaped string.
 
+## menumods.hook
+
+### menumods.hook.Add(eventName, identifier, func)
+
+Adds a hook exclusive to Menu Mods. The hook is like a regular gamemode hook.
+
+Arguments:
+
+- string eventName: The event name.
+- any identifier: The unique identifier.
+- function func: The function to run.
+
+### menumods.hook.Remove(eventName, identifier)
+
+Removes a hook exclusive to Menu Mods. The hook is like a regular gamemode hook.
+
+Arguments:
+
+- string eventName: The event name.
+- any identifier: The unique identifier.
+
+### menumods.hook.Run(eventName)
+
+Runs an event exclusive to Menu Mods. The event is like a regular gamemode event.
+
+Arguments:
+
+- string eventName: The event name.
