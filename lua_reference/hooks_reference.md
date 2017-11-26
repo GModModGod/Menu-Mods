@@ -48,3 +48,11 @@ Arguments:
 - oldURL: The old URL.
 - newURL: The new URL.
 
+### PostPageChange(oldURL, newURL)
+
+Called just after the URL changes.
+
+Arguments:
+
+- oldURL: The old URL.
+- newURL: The new URL.
