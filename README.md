@@ -6,8 +6,16 @@ Menu Mods is a framework for Garry's Mod that allows the user to modify the main
 
 # Getting Started
 
-Installation Instructions:
+## Installation
+
 Once downloaded, place the folder named "menu_mods" inside the "addons" folder in your "garrysmod" directory (usually "C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/garrysmod").
+
+## ConVars
+
+Name | Default | Description
+---- | ------- | -----------
+menuMods_debugMode | 0 | Enables printing extra debug info to the console.
+menuMods_enableLogging | 0 | Enables saving logs of extra debug info into the folder "data/menu_mods/logs".
 
 ## Tutorials
 
