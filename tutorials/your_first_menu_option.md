@@ -55,8 +55,8 @@ Arguments:
 
 The functions used to add HTML elements to the page use the data structure shown below as the "data" argument.
 
-Key | Value Type | Purpose
---- | ---------- | -------
+Key | Value Type | Description
+--- | ---------- | -----------
 urls | table | Determines which pages this element should be added to. It is a table of strings.
 tag | string | Determines the type of HTML tag the element is. Unlike html, the tag name should be in all caps. (Ex. "A" for a `<a>` tag, "P" for a `<p>` tag, etc.)
 modifyExisting | boolean | Determines whether this data should be used to modify an existing element (true), or should be used to add a new one (false or nil).
