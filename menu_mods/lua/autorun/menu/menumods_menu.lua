@@ -1,342 +1,349 @@
 
-CreateConVar("menuMods_debugMode", 0, FCVAR_ARCHIVE)
-CreateConVar("menuMods_enableLogging", 0, FCVAR_ARCHIVE)
+local MenuMods_ElementTables
+local MenuMods_Elements
+local MenuMods_Hooks
+local MenuMods_IDs
 
-menumods = {}
-menumods.hook = {}
-menumods.string = {}
-
-function menumods.include(filename)
-	local exec = CompileString(file.Read(("lua/" .. filename), "GAME"), filename, true)
+if (not MenuMods_Initialized) then
+	CreateConVar("menuMods_debugMode", 0, FCVAR_ARCHIVE)
+	CreateConVar("menuMods_enableLogging", 0, FCVAR_ARCHIVE)
 	
-	exec()
-end
-
-local MenuMods_ElementTables = {}
-local MenuMods_Elements = {}
-local MenuMods_Hooks = {}
-local MenuMods_IDs = {}
-
-function menumods.CreateLog(content, extension)
-	if (not file.IsDir("menu_mods", "DATA")) then
-		file.CreateDir("menu_mods")
-	end
-	if (not file.IsDir("menu_mods/logs", "DATA")) then
-		file.CreateDir("menu_mods/logs")
+	menumods = {}
+	menumods.hook = {}
+	menumods.string = {}
+	
+	function menumods.include(filename)
+		local exec = CompileString(file.Read(("lua/" .. filename), "GAME"), filename, true)
+		
+		exec()
 	end
 	
-	local currID = 0
-	local filename
+	MenuMods_ElementTables = {}
+	MenuMods_Elements = {}
+	MenuMods_Hooks = {}
+	MenuMods_IDs = {}
 	
-	local found = false
-	
-	while (not found) do
-		currID = currID + 1
-		
-		filename = ("menu_mods/logs/log_" .. currID .. extension)
-		
-		if (not file.Exists(filename, "DATA")) then
-			found = true
+	function menumods.CreateLog(content, extension)
+		if (not file.IsDir("menu_mods", "DATA")) then
+			file.CreateDir("menu_mods")
 		end
-	end
-	
-	if filename then
-		file.Write(filename, content)
-	end
-end
-
-local escChars = {
-	{"\a", "a"},
-	{"\b", "b"},
-	{"\f", "f"},
-	{"\n", "n"},
-	{"\r", "r"},
-	{"\t", "t"},
-	{"\v", "v"},
-	{"\"", "\""},
-	{"\'", "\'"},
-}
-
-function menumods.string.LevelPush(str, numLevels, noOuterQuotes)
-	local numLevels_new = numLevels
-	
-	if (not numLevels_new) then
-		numLevels_new = 1
-	end
-	
-	local newString = ("" .. str)
-	
-	for i = 1, numLevels_new do
-		newString = string.Replace(newString, "\\", "\\\\")
-		
-		for k, v in pairs(escChars) do
-			newString = string.gsub(newString, string.PatternSafe(v[1]), ("\\" .. string.PatternSafe(v[2])))
+		if (not file.IsDir("menu_mods/logs", "DATA")) then
+			file.CreateDir("menu_mods/logs")
 		end
 		
-		if (not noOuterQuotes) then
-			newString = ("\"" .. newString .. "\"")
-		end
-	end
-	
-	return newString
-end
-
-function menumods.string.LevelPop(str, numLevels)
-	local numLevels_new = numLevels
-	
-	if (not numLevels_new) then
-		numLevels_new = 1
-	end
-	
-	local newString = ("" .. str)
-	
-	for i = 1, numLevels_new do
-		for k, v in pairs(escChars) do
-			newString = string.gsub(newString, ("^" .. string.PatternSafe(v[1])), "")
-			newString = string.gsub(newString, ("([^\\])" .. string.PatternSafe(v[1])), "%1")
-			newString = string.Replace(newString, ("\\" .. v[2]), v[1])
-		end
+		local currID = 0
+		local filename
 		
-		newString = string.Replace(newString, "\\\\", "\\")
-	end
-	
-	return newString
-end
-
-function menumods.FindID(identifier)
-	local found = false
-	local currID = 0
-	
-	while (not found) do
-		currID = currID + 1
+		local found = false
 		
-		if (not MenuMods_IDs[currID]) then
-			found = true
-		end
-	end
-	
-	MenuMods_IDs[currID] = identifier
-	
-	return currID
-end
-
-function menumods.RemoveID(id)
-	MenuMods_IDs[id] = nil
-end
-
-function menumods.hook.Add(eventName, identifier, func)
-	if (not isfunction(func)) then return end
-	
-	if (not MenuMods_Hooks[eventName]) then
-		MenuMods_Hooks[eventName] = {}
-	end
-	
-	if MenuMods_Hooks[eventName][identifier] then return end
-	
-	MenuMods_Hooks[eventName][identifier] = func
-end
-
-function menumods.hook.Remove(eventName, identifier)
-	if (not MenuMods_Hooks[eventName]) then return end
-	
-	MenuMods_Hooks[eventName][identifier] = nil
-	
-	if (#MenuMods_Hooks[eventName] <= 0) then
-		MenuMods_Hooks[eventName] = nil
-	end
-end
-
-function menumods.hook.Run(eventName, ...)
-	if (not MenuMods_Hooks[eventName]) then return true end
-	
-	local args_old = {...}
-	local args = args_old
-	
-	local currOutput = true
-	
-	for k, v in pairs(MenuMods_Hooks[eventName]) do
-		local result = v(unpack(args))
-		
-		if (result != nil) then
-			if (not result) then
-				currOutput = false
+		while (not found) do
+			currID = currID + 1
+			
+			filename = ("menu_mods/logs/log_" .. currID .. extension)
+			
+			if (not file.Exists(filename, "DATA")) then
+				found = true
 			end
 		end
-	end
-	
-	return currOutput
-end
-
-function menumods.hook.GetTable()
-	local currTable = {}
-	
-	for k, v in pairs(MenuMods_Hooks) do
-		local currIndex = k
-		local currEvent = v
 		
-		currTable[currIndex] = {}
-		
-		for i, j in pairs(currEvent) do
-			currTable[currIndex][i] = j
+		if filename then
+			file.Write(filename, content)
 		end
 	end
 	
-	return currTable
-end
-
-function menumods.AddElement(identifier, data)
-	if MenuMods_ElementTables["" .. identifier] then return end
-	if (not istable(data)) then return end
+	local escChars = {
+		{"\a", "a"},
+		{"\b", "b"},
+		{"\f", "f"},
+		{"\n", "n"},
+		{"\r", "r"},
+		{"\t", "t"},
+		{"\v", "v"},
+		{"\"", "\""},
+		{"\'", "\'"},
+	}
 	
-	data.identifier = ("" .. identifier)
-	
-	local newData_Old = data
-	local newData = newData_Old
-	
-	MenuMods_ElementTables["" .. identifier] = newData
-	
-	table.insert(MenuMods_Elements, (#MenuMods_Elements + 1), ("" .. identifier))
-end
-
-function menumods.AddOption(identifier, data, onClick)
-	if MenuMods_ElementTables["" .. identifier] then return end
-	if (not istable(data)) then return end
-	
-	data.identifier = ("" .. identifier)
-	
-	local newData_Old = data
-	local newData = newData_Old
-	
-	newData.tag = "A"
-	
-	newData.onClick = onClick
-	
-	table.insert(newData.attributes, (#newData.attributes + 1), {"href", "#/"})
-	
-	MenuMods_ElementTables["" .. identifier] = newData
-	
-	table.insert(MenuMods_Elements, (#MenuMods_Elements + 1), ("" .. identifier))
-end
-
-function menumods.AddLuaOption(identifier, data, callback)
-	if MenuMods_ElementTables["" .. identifier] then return end
-	if (not istable(data)) then return end
-	
-	data.identifier = ("" .. identifier)
-	
-	local newData_Old = data
-	local newData = newData_Old
-	
-	newData.tag = "A"
-	newData.callback = callback
-	
-	newData.onClick = "lua.Run(\"menumods.ExecuteElementCallback(\\\"" .. menumods.string.LevelPush(("" .. identifier), 2, true) .. "\\\")\")"
-	
-	table.insert(newData.attributes, (#newData.attributes + 1), {"href", "#/"})
-	
-	MenuMods_ElementTables["" .. identifier] = newData
-	
-	table.insert(MenuMods_Elements, (#MenuMods_Elements + 1), ("" .. identifier))
-end
-
-function menumods.ExecuteElementCallback(identifier)
-	if (not MenuMods_ElementTables["" .. identifier]) then return end
-	
-	return MenuMods_ElementTables["" .. identifier].callback()
-end
-
-function menumods.RemoveElementFromPage(identifier)
-	if (not pnlMainMenu) then return end
-	if (not pnlMainMenu.HTML) then return end
-	if (not MenuMods_ElementTables["" .. identifier]) then return end
-	
-	local elementTable = MenuMods_ElementTables["" .. identifier]
-	
-	if (not elementTable.id) then return end
-	
-	pnlMainMenu.HTML:RemoveElement(elementTable.id)
-	
-	MenuMods_ElementTables["" .. identifier].disabled = true
-end
-
-function menumods.RemoveElement(identifier)
-	menumods.RemoveElementFromPage(identifier)
-	
-	MenuMods_ElementTables["" .. identifier] = nil
-end
-
-function menumods.RemoveHTMLElement(searchType, ...)
-	if (not pnlMainMenu) then return end
-	if (not pnlMainMenu.HTML) then return end
-	if (not isstring(searchType)) then return end
-	
-	if (searchType == "classname") then
-		pnlMainMenu.HTML:RemoveElementByClassName(...)
-	elseif (searchType == "id") then
-		pnlMainMenu.HTML:RemoveElementByID(...)
-	elseif (searchType == "menumodsid") then
-		pnlMainMenu.HTML:RemoveElement(...)
-	elseif (searchType == "name") then
-		pnlMainMenu.HTML:RemoveElementByName(...)
-	elseif (searchType == "tagname") then
-		pnlMainMenu.HTML:RemoveElementByTagName(...)
+	function menumods.string.LevelPush(str, numLevels, noOuterQuotes)
+		local numLevels_new = numLevels
+		
+		if (not numLevels_new) then
+			numLevels_new = 1
+		end
+		
+		local newString = ("" .. str)
+		
+		for i = 1, numLevels_new do
+			newString = string.Replace(newString, "\\", "\\\\")
+			
+			for k, v in pairs(escChars) do
+				newString = string.gsub(newString, string.PatternSafe(v[1]), ("\\" .. string.PatternSafe(v[2])))
+			end
+			
+			if (not noOuterQuotes) then
+				newString = ("\"" .. newString .. "\"")
+			end
+		end
+		
+		return newString
 	end
-end
-
-function menumods.ReAddExistingElement(identifier)
-	if (not MenuMods_ElementTables["" .. identifier]) then return end
 	
-	MenuMods_ElementTables["" .. identifier].disabled = false
-end
-
-function menumods.ElementExists(identifier)
-	if MenuMods_ElementTables["" .. identifier] then
-		return true
-	else
-		return false
+	function menumods.string.LevelPop(str, numLevels)
+		local numLevels_new = numLevels
+		
+		if (not numLevels_new) then
+			numLevels_new = 1
+		end
+		
+		local newString = ("" .. str)
+		
+		for i = 1, numLevels_new do
+			for k, v in pairs(escChars) do
+				newString = string.gsub(newString, ("^" .. string.PatternSafe(v[1])), "")
+				newString = string.gsub(newString, ("([^\\])" .. string.PatternSafe(v[1])), "%1")
+				newString = string.Replace(newString, ("\\" .. v[2]), v[1])
+			end
+			
+			newString = string.Replace(newString, "\\\\", "\\")
+		end
+		
+		return newString
 	end
-end
-
-function menumods.GetElement(identifier)
-	return MenuMods_ElementTables["" .. identifier]
-end
-
-function menumods.GetElementNameByID(id)
-	if (not MenuMods_IDs[id]) then return end
 	
-	return ("" .. MenuMods_IDs[id])
-end
-
-function menumods.GetActiveElementTable()
-	local currTable = {}
+	function menumods.FindID(identifier)
+		local found = false
+		local currID = 0
+		
+		while (not found) do
+			currID = currID + 1
+			
+			if (not MenuMods_IDs[currID]) then
+				found = true
+			end
+		end
+		
+		MenuMods_IDs[currID] = identifier
+		
+		return currID
+	end
 	
-	for k, v in pairs(MenuMods_Elements) do
-		if MenuMods_ElementTables[v] then
-			table.insert(currTable, (#currTable + 1), MenuMods_ElementTables[v])
+	function menumods.RemoveID(id)
+		MenuMods_IDs[id] = nil
+	end
+	
+	function menumods.hook.Add(eventName, identifier, func)
+		if (not isfunction(func)) then return end
+		
+		if (not MenuMods_Hooks[eventName]) then
+			MenuMods_Hooks[eventName] = {}
+		end
+		
+		if MenuMods_Hooks[eventName][identifier] then return end
+		
+		MenuMods_Hooks[eventName][identifier] = func
+	end
+	
+	function menumods.hook.Remove(eventName, identifier)
+		if (not MenuMods_Hooks[eventName]) then return end
+		
+		MenuMods_Hooks[eventName][identifier] = nil
+		
+		if (#MenuMods_Hooks[eventName] <= 0) then
+			MenuMods_Hooks[eventName] = nil
 		end
 	end
 	
-	return currTable
-end
-
-function menumods.GetElementTable()
-	local currTable = {}
-	
-	for k, v in pairs(MenuMods_ElementTables) do
-		table.insert(currTable, (#currTable + 1), v)
+	function menumods.hook.Run(eventName, ...)
+		if (not MenuMods_Hooks[eventName]) then return true end
+		
+		local args_old = {...}
+		local args = args_old
+		
+		local currOutput = true
+		
+		for k, v in pairs(MenuMods_Hooks[eventName]) do
+			local result = v(unpack(args))
+			
+			if (result != nil) then
+				if (not result) then
+					currOutput = false
+				end
+			end
+		end
+		
+		return currOutput
 	end
 	
-	return currTable
-end
-
-function menumods.RunJavaScript(str)
-	if (not pnlMainMenu) then return end
-	if (not pnlMainMenu.HTML) then return end
+	function menumods.hook.GetTable()
+		local currTable = {}
+		
+		for k, v in pairs(MenuMods_Hooks) do
+			local currIndex = k
+			local currEvent = v
+			
+			currTable[currIndex] = {}
+			
+			for i, j in pairs(currEvent) do
+				currTable[currIndex][i] = j
+			end
+		end
+		
+		return currTable
+	end
 	
-	pnlMainMenu.HTML:Call(str)
+	function menumods.AddElement(identifier, data)
+		if MenuMods_ElementTables["" .. identifier] then return end
+		if (not istable(data)) then return end
+		
+		data.identifier = ("" .. identifier)
+		
+		local newData_Old = data
+		local newData = newData_Old
+		
+		MenuMods_ElementTables["" .. identifier] = newData
+		
+		table.insert(MenuMods_Elements, (#MenuMods_Elements + 1), ("" .. identifier))
+	end
+	
+	function menumods.AddOption(identifier, data, onClick)
+		if MenuMods_ElementTables["" .. identifier] then return end
+		if (not istable(data)) then return end
+		
+		data.identifier = ("" .. identifier)
+		
+		local newData_Old = data
+		local newData = newData_Old
+		
+		newData.tag = "A"
+		
+		newData.onClick = onClick
+		
+		table.insert(newData.attributes, (#newData.attributes + 1), {"href", "#/"})
+		
+		MenuMods_ElementTables["" .. identifier] = newData
+		
+		table.insert(MenuMods_Elements, (#MenuMods_Elements + 1), ("" .. identifier))
+	end
+	
+	function menumods.AddLuaOption(identifier, data, callback)
+		if MenuMods_ElementTables["" .. identifier] then return end
+		if (not istable(data)) then return end
+		
+		data.identifier = ("" .. identifier)
+		
+		local newData_Old = data
+		local newData = newData_Old
+		
+		newData.tag = "A"
+		newData.callback = callback
+		
+		newData.onClick = "lua.Run(\"menumods.ExecuteElementCallback(\\\"" .. menumods.string.LevelPush(("" .. identifier), 2, true) .. "\\\")\")"
+		
+		table.insert(newData.attributes, (#newData.attributes + 1), {"href", "#/"})
+		
+		MenuMods_ElementTables["" .. identifier] = newData
+		
+		table.insert(MenuMods_Elements, (#MenuMods_Elements + 1), ("" .. identifier))
+	end
+	
+	function menumods.ExecuteElementCallback(identifier)
+		if (not MenuMods_ElementTables["" .. identifier]) then return end
+		
+		return MenuMods_ElementTables["" .. identifier].callback()
+	end
+	
+	function menumods.RemoveElementFromPage(identifier)
+		if (not pnlMainMenu) then return end
+		if (not pnlMainMenu.HTML) then return end
+		if (not MenuMods_ElementTables["" .. identifier]) then return end
+		
+		local elementTable = MenuMods_ElementTables["" .. identifier]
+		
+		if (not elementTable.id) then return end
+		
+		pnlMainMenu.HTML:RemoveElement(elementTable.id)
+		
+		MenuMods_ElementTables["" .. identifier].disabled = true
+	end
+	
+	function menumods.RemoveElement(identifier)
+		menumods.RemoveElementFromPage(identifier)
+		
+		MenuMods_ElementTables["" .. identifier] = nil
+	end
+	
+	function menumods.RemoveHTMLElement(searchType, ...)
+		if (not pnlMainMenu) then return end
+		if (not pnlMainMenu.HTML) then return end
+		if (not isstring(searchType)) then return end
+		
+		if (searchType == "classname") then
+			pnlMainMenu.HTML:RemoveElementByClassName(...)
+		elseif (searchType == "id") then
+			pnlMainMenu.HTML:RemoveElementByID(...)
+		elseif (searchType == "menumodsid") then
+			pnlMainMenu.HTML:RemoveElement(...)
+		elseif (searchType == "name") then
+			pnlMainMenu.HTML:RemoveElementByName(...)
+		elseif (searchType == "tagname") then
+			pnlMainMenu.HTML:RemoveElementByTagName(...)
+		end
+	end
+	
+	function menumods.ReAddExistingElement(identifier)
+		if (not MenuMods_ElementTables["" .. identifier]) then return end
+		
+		MenuMods_ElementTables["" .. identifier].disabled = false
+	end
+	
+	function menumods.ElementExists(identifier)
+		if MenuMods_ElementTables["" .. identifier] then
+			return true
+		else
+			return false
+		end
+	end
+	
+	function menumods.GetElement(identifier)
+		return MenuMods_ElementTables["" .. identifier]
+	end
+	
+	function menumods.GetElementNameByID(id)
+		if (not MenuMods_IDs[id]) then return end
+		
+		return ("" .. MenuMods_IDs[id])
+	end
+	
+	function menumods.GetActiveElementTable()
+		local currTable = {}
+		
+		for k, v in pairs(MenuMods_Elements) do
+			if MenuMods_ElementTables[v] then
+				table.insert(currTable, (#currTable + 1), MenuMods_ElementTables[v])
+			end
+		end
+		
+		return currTable
+	end
+	
+	function menumods.GetElementTable()
+		local currTable = {}
+		
+		for k, v in pairs(MenuMods_ElementTables) do
+			table.insert(currTable, (#currTable + 1), v)
+		end
+		
+		return currTable
+	end
+	
+	function menumods.RunJavaScript(str)
+		if (not pnlMainMenu) then return end
+		if (not pnlMainMenu.HTML) then return end
+		
+		pnlMainMenu.HTML:Call(str)
+	end
 end
 
-if (not pnlMainMenu) then return end
+if (not (pnlMainMenu or pnlMainMenu:IsValid())) then return end
 
 local function MenuMods_Init(self)
 	self.HTML.ShouldRefresh = true
@@ -697,43 +704,49 @@ local function MenuMods_Init(self)
 	end
 end
 
-local PanelInit_Old = pnlMainMenu.Init
-local PanelInit = PanelInit_Old
-
-MenuMods_UpdatingURL = false
-
-pnlMainMenu.Init = function(self)
-	if PanelInit then
-		PanelInit(self)
+if (not pnlMainMenu.MenuMods_HasCreatedFuncs) then
+	local PanelInit_Old = pnlMainMenu.Init
+	local PanelInit = PanelInit_Old
+	
+	MenuMods_UpdatingURL = false
+	
+	pnlMainMenu.Init = function(self)
+		if PanelInit then
+			PanelInit(self)
+		end
+		
+		if (not self.MenuMods_HasInitialized) then
+			MenuMods_Init(self)
+		end
+		
+		if self.UpdateHTML then
+			self:UpdateHTML()
+		end
 	end
 	
-	if (not self.MenuMods_HasInitialized) then
-		MenuMods_Init(self)
+	local PanelThink_Old = pnlMainMenu.Think
+	local PanelThink = PanelThink_Old
+	
+	pnlMainMenu.Think = function(self)
+		if PanelThink then
+			PanelThink(self)
+		end
+		
+		if (not self.MenuMods_HasInitialized) then
+			MenuMods_Init(self)
+		end
+		
+		if self.UpdateHTML then
+			self:UpdateHTML()
+		end
+		
+		menumods.hook.Run("Think")
 	end
 	
-	if self.UpdateHTML then
-		self:UpdateHTML()
-	end
+	pnlMainMenu.MenuMods_HasCreatedFuncs = true
 end
 
-local PanelThink_Old = pnlMainMenu.Think
-local PanelThink = PanelThink_Old
-
-pnlMainMenu.Think = function(self)
-	if PanelThink then
-		PanelThink(self)
-	end
-	
-	if (not self.MenuMods_HasInitialized) then
-		MenuMods_Init(self)
-	end
-	
-	if self.UpdateHTML then
-		self:UpdateHTML()
-	end
-	
-	menumods.hook.Run("Think")
+if (not MenuMods_Initialized) then
+	menumods.include("includes/modules/luahtml.lua")
+	menumods.include("includes/modules/luajs.lua")
 end
-
-menumods.include("includes/modules/luahtml.lua")
-menumods.include("includes/modules/luajs.lua")
