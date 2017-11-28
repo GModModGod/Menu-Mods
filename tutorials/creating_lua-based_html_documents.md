@@ -131,7 +131,7 @@ Called when the document is opened in a DHTML panel.
 
 Arguments:
 
-- Panel HTML: The DHTML panel the document was opened in.
+- panel HTML: The DHTML panel the document was opened in.
 
 ### LUA_HTML:OnRunScript(script)
 

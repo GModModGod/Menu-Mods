@@ -105,7 +105,7 @@ Called when the script is ran in a DHTML panel.
 
 Arguments:
 
-- Panel HTML: The DHTML panel the script was run in.
+- panel HTML: The DHTML panel the script was run in.
 
 ## Finishing Up
 
