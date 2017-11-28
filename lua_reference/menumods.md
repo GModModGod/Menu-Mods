@@ -31,7 +31,7 @@ Returns:
 
 - number index: The found index.
 
-IMPORTANT: It is highly recommended to refrain from using this function to create luahtml classes unless there is a specific reason for doing so.
+IMPORTANT: It is highly recommended to refrain from using this function unless there is a specific reason for doing so.
 
 ### menumods.RemoveID(id)
 
@@ -41,7 +41,7 @@ Arguments:
 
 - number id: The index to remove the identifier from.
 
-IMPORTANT: It is highly recommended to refrain from using this function to create luahtml classes unless there is a specific reason for doing so.
+IMPORTANT: It is highly recommended to refrain from using this function unless there is a specific reason for doing so.
 
 ### menumods.AddElement(identifier, data)
 
