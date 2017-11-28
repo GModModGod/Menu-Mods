@@ -1,9 +1,4 @@
 
-local MenuMods_ElementTables
-local MenuMods_Elements
-local MenuMods_Hooks
-local MenuMods_IDs
-
 if (not MenuMods_Initialized) then
 	CreateConVar("menuMods_debugMode", 0, FCVAR_ARCHIVE)
 	CreateConVar("menuMods_enableLogging", 0, FCVAR_ARCHIVE)
@@ -18,10 +13,10 @@ if (not MenuMods_Initialized) then
 		exec()
 	end
 	
-	MenuMods_ElementTables = {}
-	MenuMods_Elements = {}
-	MenuMods_Hooks = {}
-	MenuMods_IDs = {}
+	local MenuMods_ElementTables = {}
+	local MenuMods_Elements = {}
+	local MenuMods_Hooks = {}
+	local MenuMods_IDs = {}
 	
 	function menumods.CreateLog(content, extension)
 		if (not file.IsDir("menu_mods", "DATA")) then
@@ -341,78 +336,168 @@ if (not MenuMods_Initialized) then
 		
 		pnlMainMenu.HTML:Call(str)
 	end
-end
-
-if (not (pnlMainMenu or pnlMainMenu:IsValid())) then return end
-
-local function MenuMods_Init(self)
-	self.HTML.ShouldRefresh = true
 	
-	function self.HTML:CreateElement(identifier, currURL, urls, tag, class, parentClass, searchType, parentNum, onClick, content, ...)
-		local proceed = false
+	function MenuMods_PanelInit(self)
+		self.HTML.ShouldRefresh = true
 		
-		if urls then
-			if istable(urls) then
-				for k, v in pairs(urls) do
-					if (currURL == v) then
-						proceed = true
-						break
+		function self.HTML:CreateElement(identifier, currURL, urls, tag, class, parentClass, searchType, parentNum, onClick, content, ...)
+			local proceed = false
+			
+			if urls then
+				if istable(urls) then
+					for k, v in pairs(urls) do
+						if (currURL == v) then
+							proceed = true
+							break
+						end
 					end
+				elseif isstring(urls) then
+					proceed = (currURL == urls)
 				end
-			elseif isstring(urls) then
-				proceed = (currURL == urls)
-			end
-		else
-			proceed = true
-		end
-		
-		if proceed then
-			local attributes = {...}
-			local exec
-			
-			if (searchType == nil) then
-				exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(parentClass, 1) .. ");\n"
-			elseif (searchType == "classname") then
-				exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(parentClass, 1) .. ");\n"
-			elseif (searchType == "id") then
-				exec = "var elements = [document.getElementById(" .. menumods.string.LevelPush(parentClass, 1) .. ")];\n"
-			elseif (searchType == "menumodsid") then
-				exec = "var elements = [document.getElementById(" .. menumods.string.LevelPush(("menumods_" .. parentClass), 1) .. ")];\n"
-			elseif (searchType == "name") then
-				exec = "var elements = document.getElementsByName(" .. menumods.string.LevelPush(parentClass, 1) .. ");\n"
-			elseif (searchType == "tagname") then
-				exec = "var elements = document.getElementsByTagName(" .. menumods.string.LevelPush(parentClass, 1) .. ");\n"
 			else
-				exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(parentClass, 1) .. ");\n"
+				proceed = true
 			end
 			
-			exec = exec .. "if (elements.length >= " .. parentNum .. ") {\nvar element = elements[" .. (parentNum - 1) .. "];\nif ((element != undefined) && (element != null)) {\nvar object = document.createElement(\"" .. tag .. "\");\nelement.appendChild(object);\n"
-			
-			local ID = menumods.FindID(identifier)
-			
-			if MenuMods_ElementTables[identifier] then
-				MenuMods_ElementTables[identifier].id = ID
-			end
-			
-			exec = exec .. "object.setAttribute(\"id\", \"menumods_" .. ID .. "\");\n"
-			
-			exec = exec .. "object.setAttribute(\"class\", " .. menumods.string.LevelPush(class, 1) .. ");\n"
-			
-			for k, v in pairs(attributes) do
-				if isnumber(k) then
-					if (isstring(v[1]) and isstring(v[2])) then
-						if (v[1] != "id") and (v[1] != "class") then
-							exec = exec .. "object.setAttribute(" .. menumods.string.LevelPush(v[1], 1) .. ", " .. menumods.string.LevelPush(v[2], 1) .. ");\n"
+			if proceed then
+				local attributes = {...}
+				local exec
+				
+				if (searchType == nil) then
+					exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(parentClass, 1) .. ");\n"
+				elseif (searchType == "classname") then
+					exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(parentClass, 1) .. ");\n"
+				elseif (searchType == "id") then
+					exec = "var elements = [document.getElementById(" .. menumods.string.LevelPush(parentClass, 1) .. ")];\n"
+				elseif (searchType == "menumodsid") then
+					exec = "var elements = [document.getElementById(" .. menumods.string.LevelPush(("menumods_" .. parentClass), 1) .. ")];\n"
+				elseif (searchType == "name") then
+					exec = "var elements = document.getElementsByName(" .. menumods.string.LevelPush(parentClass, 1) .. ");\n"
+				elseif (searchType == "tagname") then
+					exec = "var elements = document.getElementsByTagName(" .. menumods.string.LevelPush(parentClass, 1) .. ");\n"
+				else
+					exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(parentClass, 1) .. ");\n"
+				end
+				
+				exec = exec .. "if (elements.length >= " .. parentNum .. ") {\nvar element = elements[" .. (parentNum - 1) .. "];\nif ((element != undefined) && (element != null)) {\nvar object = document.createElement(\"" .. tag .. "\");\nelement.appendChild(object);\n"
+				
+				local ID = menumods.FindID(identifier)
+				
+				if MenuMods_ElementTables[identifier] then
+					MenuMods_ElementTables[identifier].id = ID
+				end
+				
+				exec = exec .. "object.setAttribute(\"id\", \"menumods_" .. ID .. "\");\n"
+				
+				exec = exec .. "object.setAttribute(\"class\", " .. menumods.string.LevelPush(class, 1) .. ");\n"
+				
+				for k, v in pairs(attributes) do
+					if isnumber(k) then
+						if (isstring(v[1]) and isstring(v[2])) then
+							if (v[1] != "id") and (v[1] != "class") then
+								exec = exec .. "object.setAttribute(" .. menumods.string.LevelPush(v[1], 1) .. ", " .. menumods.string.LevelPush(v[2], 1) .. ");\n"
+							end
 						end
 					end
 				end
+				
+				if onClick then
+					exec = exec .. "object.addEventListener(\"click\", function(){\n" .. onClick .. ";\n});\n"
+				end
+				
+				exec = exec .. "object.innerHTML = " .. menumods.string.LevelPush(content, 1) .. ";\n} else {\nlua.Run(\"pnlMainMenu.HTML.MenuModsElements[\\\"" .. menumods.string.LevelPush(identifier, 2, true) .. "\\\"] = nil\");\n};\n} else {\nlua.Run(\"pnlMainMenu.HTML.MenuModsElements[\\\"" .. menumods.string.LevelPush(identifier, 2, true) .. "\\\"] = nil\");\n}\n"
+				
+				self:Call(exec)
+				
+				if (GetConVarNumber("menumods_enableLogging") != 0) then
+					menumods.CreateLog(exec, ".txt")
+				end
+				
+				if (GetConVarNumber("menuMods_debugMode") != 0) then
+					print("Menu Mods: Created element of class " .. menumods.string.LevelPush(class, 1) .. " parented to element of class " .. menumods.string.LevelPush(parentClass, 1) .. ".")
+				end
+				
+				menumods.hook.Run("ElementCreated", currURL, urls, tag, class, parentClass, parentNum, content, ...)
+				
+				return ID
+			end
+		end
+		
+		function self.HTML:ModifyElement(currURL, urls, class, searchType, num, onClick, content, ...)
+			local proceed = false
+			
+			if urls then
+				if istable(urls) then
+					for k, v in pairs(urls) do
+						if (currURL == v) then
+							proceed = true
+							break
+						end
+					end
+				elseif isstring(urls) then
+					proceed = (currURL == urls)
+				end
+			else
+				proceed = true
 			end
 			
-			if onClick then
-				exec = exec .. "object.addEventListener(\"click\", function(){\n" .. onClick .. ";\n});\n"
+			if proceed then
+				local attributes = {...}
+				local exec
+				
+				if (searchType == nil) then
+					exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(class, 1) .. ");\n"
+				elseif (searchType == "classname") then
+					exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(class, 1) .. ");\n"
+				elseif (searchType == "id") then
+					exec = "var elements = [document.getElementById(" .. menumods.string.LevelPush(class, 1) .. ")];\n"
+				elseif (searchType == "menumodsid") then
+					exec = "var elements = [document.getElementById(" .. menumods.string.LevelPush(("menumods_" .. class), 1) .. ")];\n"
+				elseif (searchType == "name") then
+					exec = "var elements = document.getElementsByName(" .. menumods.string.LevelPush(class, 1) .. ");\n"
+				elseif (searchType == "tagname") then
+					exec = "var elements = document.getElementsByTagName(" .. menumods.string.LevelPush(class, 1) .. ");\n"
+				else
+					exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(class, 1) .. ");\n"
+				end
+				
+				exec = exec .. "if (objects.length >= " .. num .. ") {\nvar object = objects[" .. (num - 1) .. "];\nif ((object != undefined) && (object != null)) {\n"
+				
+				for k, v in pairs(attributes) do
+					if isnumber(k) then
+						if (isstring(v[1]) and isstring(v[2])) then
+							if (v[1] != "id") and (v[1] != "class") then
+								exec = exec .. "object.setAttribute(" .. menumods.string.LevelPush(v[1], 1) .. ", " .. menumods.string.LevelPush(v[2], 1) .. ");\n"
+							end
+						end
+					end
+				end
+				
+				if onClick then
+					exec = exec .. "object.addEventListener(\"click\", function(){\n" .. onClick .. ";\n});\n"
+				end
+				
+				if content then
+					exec = exec .. "object.innerHTML = " .. menumods.string.LevelPush(content, 1) .. ";\n"
+				end
+				
+				exec = exec .. "};\n}\n"
+				
+				self:Call(exec)
+				
+				if (GetConVarNumber("menumods_enableLogging") != 0) then
+					menumods.CreateLog(exec, ".txt")
+				end
+				
+				if (GetConVarNumber("menuMods_debugMode") != 0) then
+					print("Menu Mods: Modified element of class " .. menumods.string.LevelPush(class, 1) .. ".")
+				end
+				
+				menumods.hook.Run("ElementModified", currURL, urls, class, num, content, ...)
 			end
-			
-			exec = exec .. "object.innerHTML = " .. menumods.string.LevelPush(content, 1) .. ";\n} else {\nlua.Run(\"pnlMainMenu.HTML.MenuModsElements[\\\"" .. menumods.string.LevelPush(identifier, 2, true) .. "\\\"] = nil\");\n};\n} else {\nlua.Run(\"pnlMainMenu.HTML.MenuModsElements[\\\"" .. menumods.string.LevelPush(identifier, 2, true) .. "\\\"] = nil\");\n}\n"
+		end
+		
+		function self.HTML:RemoveElement(id)
+			local exec = "var object = document.getElementById(\"menumods_" .. id .. "\");\nif (object != null) {\nif (object.parentNode != undefined) {\nobject.parentNode.removeChild(object);\n};\n};\n"
 			
 			self:Call(exec)
 			
@@ -420,75 +505,17 @@ local function MenuMods_Init(self)
 				menumods.CreateLog(exec, ".txt")
 			end
 			
+			menumods.hook.Run("ElementRemoved", "menumods_id", id)
+			
+			menumods.RemoveID(id)
+			
 			if (GetConVarNumber("menuMods_debugMode") != 0) then
-				print("Menu Mods: Created element of class " .. menumods.string.LevelPush(class, 1) .. " parented to element of class " .. menumods.string.LevelPush(parentClass, 1) .. ".")
+				print("Menu Mods: Removed element of Menu Mods ID " .. menumods.string.LevelPush(id, 1) .. ".")
 			end
-			
-			menumods.hook.Run("ElementCreated", currURL, urls, tag, class, parentClass, parentNum, content, ...)
-			
-			return ID
-		end
-	end
-	
-	function self.HTML:ModifyElement(currURL, urls, class, searchType, num, onClick, content, ...)
-		local proceed = false
-		
-		if urls then
-			if istable(urls) then
-				for k, v in pairs(urls) do
-					if (currURL == v) then
-						proceed = true
-						break
-					end
-				end
-			elseif isstring(urls) then
-				proceed = (currURL == urls)
-			end
-		else
-			proceed = true
 		end
 		
-		if proceed then
-			local attributes = {...}
-			local exec
-			
-			if (searchType == nil) then
-				exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(class, 1) .. ");\n"
-			elseif (searchType == "classname") then
-				exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(class, 1) .. ");\n"
-			elseif (searchType == "id") then
-				exec = "var elements = [document.getElementById(" .. menumods.string.LevelPush(class, 1) .. ")];\n"
-			elseif (searchType == "menumodsid") then
-				exec = "var elements = [document.getElementById(" .. menumods.string.LevelPush(("menumods_" .. class), 1) .. ")];\n"
-			elseif (searchType == "name") then
-				exec = "var elements = document.getElementsByName(" .. menumods.string.LevelPush(class, 1) .. ");\n"
-			elseif (searchType == "tagname") then
-				exec = "var elements = document.getElementsByTagName(" .. menumods.string.LevelPush(class, 1) .. ");\n"
-			else
-				exec = "var elements = document.getElementsByClassName(" .. menumods.string.LevelPush(class, 1) .. ");\n"
-			end
-			
-			exec = exec .. "if (objects.length >= " .. num .. ") {\nvar object = objects[" .. (num - 1) .. "];\nif ((object != undefined) && (object != null)) {\n"
-			
-			for k, v in pairs(attributes) do
-				if isnumber(k) then
-					if (isstring(v[1]) and isstring(v[2])) then
-						if (v[1] != "id") and (v[1] != "class") then
-							exec = exec .. "object.setAttribute(" .. menumods.string.LevelPush(v[1], 1) .. ", " .. menumods.string.LevelPush(v[2], 1) .. ");\n"
-						end
-					end
-				end
-			end
-			
-			if onClick then
-				exec = exec .. "object.addEventListener(\"click\", function(){\n" .. onClick .. ";\n});\n"
-			end
-			
-			if content then
-				exec = exec .. "object.innerHTML = " .. menumods.string.LevelPush(content, 1) .. ";\n"
-			end
-			
-			exec = exec .. "};\n}\n"
+		function self.HTML:RemoveElementByID(id)
+			local exec = "var object = document.getElementById(" .. menumods.string.LevelPush(id, 1) .. ");\nif (object != null) {\nif ((object.parentNode != undefined) && (object.parentNode != null) && (object.id.indexOf(\"menumods_\") != 0)) {\nobject.parentNode.removeChild(object);\n};\n};\n"
 			
 			self:Call(exec)
 			
@@ -496,213 +523,181 @@ local function MenuMods_Init(self)
 				menumods.CreateLog(exec, ".txt")
 			end
 			
+			menumods.hook.Run("ElementRemoved", "id", id)
+			
 			if (GetConVarNumber("menuMods_debugMode") != 0) then
-				print("Menu Mods: Modified element of class " .. menumods.string.LevelPush(class, 1) .. ".")
+				print("Menu Mods: Removed element of ID " .. menumods.string.LevelPush(id, 1) .. ".")
+			end
+		end
+		
+		function self.HTML:RemoveElementByClassName(className, num)
+			local exec = "var objects = document.getElementsByClassName(" .. menumods.string.LevelPush(className, 1) .. ");\nvar object = objects[" .. (num - 1) .. "];\nif (object != undefined) {\nif ((object.parentNode != undefined) && (object.parentNode != null) && (object.id.indexOf(\"menumods_\") != 0)) {\nobject.parentNode.removeChild(object);\n};\n};\n"
+			
+			self:Call(exec)
+			
+			if (GetConVarNumber("menumods_enableLogging") != 0) then
+				menumods.CreateLog(exec, ".txt")
 			end
 			
-			menumods.hook.Run("ElementModified", currURL, urls, class, num, content, ...)
-		end
-	end
-	
-	function self.HTML:RemoveElement(id)
-		local exec = "var object = document.getElementById(\"menumods_" .. id .. "\");\nif (object != null) {\nif (object.parentNode != undefined) {\nobject.parentNode.removeChild(object);\n};\n};\n"
-		
-		self:Call(exec)
-		
-		if (GetConVarNumber("menumods_enableLogging") != 0) then
-			menumods.CreateLog(exec, ".txt")
+			menumods.hook.Run("ElementRemoved", "classname", className, num)
+			
+			if (GetConVarNumber("menuMods_debugMode") != 0) then
+				print("Menu Mods: Removed element of class name " .. menumods.string.LevelPush(className, 1) .. ", occurrence " .. num .. ".")
+			end
 		end
 		
-		menumods.hook.Run("ElementRemoved", "menumods_id", id)
-		
-		menumods.RemoveID(id)
-		
-		if (GetConVarNumber("menuMods_debugMode") != 0) then
-			print("Menu Mods: Removed element of Menu Mods ID " .. menumods.string.LevelPush(id, 1) .. ".")
-		end
-	end
-	
-	function self.HTML:RemoveElementByID(id)
-		local exec = "var object = document.getElementById(" .. menumods.string.LevelPush(id, 1) .. ");\nif (object != null) {\nif ((object.parentNode != undefined) && (object.parentNode != null) && (object.id.indexOf(\"menumods_\") != 0)) {\nobject.parentNode.removeChild(object);\n};\n};\n"
-		
-		self:Call(exec)
-		
-		if (GetConVarNumber("menumods_enableLogging") != 0) then
-			menumods.CreateLog(exec, ".txt")
-		end
-		
-		menumods.hook.Run("ElementRemoved", "id", id)
-		
-		if (GetConVarNumber("menuMods_debugMode") != 0) then
-			print("Menu Mods: Removed element of ID " .. menumods.string.LevelPush(id, 1) .. ".")
-		end
-	end
-	
-	function self.HTML:RemoveElementByClassName(className, num)
-		local exec = "var objects = document.getElementsByClassName(" .. menumods.string.LevelPush(className, 1) .. ");\nvar object = objects[" .. (num - 1) .. "];\nif (object != undefined) {\nif ((object.parentNode != undefined) && (object.parentNode != null) && (object.id.indexOf(\"menumods_\") != 0)) {\nobject.parentNode.removeChild(object);\n};\n};\n"
-		
-		self:Call(exec)
-		
-		if (GetConVarNumber("menumods_enableLogging") != 0) then
-			menumods.CreateLog(exec, ".txt")
-		end
-		
-		menumods.hook.Run("ElementRemoved", "classname", className, num)
-		
-		if (GetConVarNumber("menuMods_debugMode") != 0) then
-			print("Menu Mods: Removed element of class name " .. menumods.string.LevelPush(className, 1) .. ", occurrence " .. num .. ".")
-		end
-	end
-	
-	function self.HTML:RemoveElementByName(name, num)
-		local exec = "var objects = document.getElementsByName(" .. menumods.string.LevelPush(name, 1) .. ");\nvar object = objects[" .. (num - 1) .. "];\nif (object != undefined) {\nif ((object.parentNode != undefined) && (object.parentNode != null) && (object.id.indexOf(\"menumods_\") != 0)) {\nobject.parentNode.removeChild(object);\n};\n};\n"
-		
-		self:Call(exec)
-		
-		if (GetConVarNumber("menumods_enableLogging") != 0) then
-			menumods.CreateLog(exec, ".txt")
-		end
-		
-		menumods.hook.Run("ElementRemoved", "name", className, num)
-		
-		if (GetConVarNumber("menuMods_debugMode") != 0) then
-			print("Menu Mods: Removed element of name " .. menumods.string.LevelPush(name, 1) .. ", occurrence " .. num .. ".")
-		end
-	end
-	
-	function self.HTML:RemoveElementByTagName(tagName, num)
-		local exec = "var objects = document.getElementsByTagName(" .. menumods.string.LevelPush(tagName, 1) .. ");\nvar object = objects[" .. (num - 1) .. "];\nif (object != undefined) {\nif ((object.parentNode != undefined) && (object.parentNode != null) && (object.id.indexOf(\"menumods_\") != 0)) {\nobject.parentNode.removeChild(object);\n};\n};\n"
-		
-		self:Call(exec)
-		
-		if (GetConVarNumber("menumods_enableLogging") != 0) then
-			menumods.CreateLog(exec, ".txt")
-		end
-		
-		menumods.hook.Run("ElementRemoved", "tagname", className, num)
-		
-		if (GetConVarNumber("menuMods_debugMode") != 0) then
-			print("Menu Mods: Removed element of class name " .. menumods.string.LevelPush(tagName, 1) .. ", occurrence " .. num .. ".")
-		end
-	end
-	
-	function self.HTML:OnDocumentReady(url)
-		self.ShouldRefresh = true
-	end
-	
-	function self:UpdateHTML()
-		if self.HTML then
-			if (not MenuMods_UpdatingURL) then
-				menumods.hook.Run("PageThink")
-				
-				MenuMods_UpdatingURL = true
-				
-				self.HTML:Call("lua.Run(\"pnlMainMenu.HTML.MenuMods_URL = \\\"\" + document.URL + \"\\\"; MenuMods_UpdatingURL = false\")")
+		function self.HTML:RemoveElementByName(name, num)
+			local exec = "var objects = document.getElementsByName(" .. menumods.string.LevelPush(name, 1) .. ");\nvar object = objects[" .. (num - 1) .. "];\nif (object != undefined) {\nif ((object.parentNode != undefined) && (object.parentNode != null) && (object.id.indexOf(\"menumods_\") != 0)) {\nobject.parentNode.removeChild(object);\n};\n};\n"
+			
+			self:Call(exec)
+			
+			if (GetConVarNumber("menumods_enableLogging") != 0) then
+				menumods.CreateLog(exec, ".txt")
 			end
 			
-			if (not self.HTML.MenuModsElements) then
-				self.HTML.MenuModsElements = {}
+			menumods.hook.Run("ElementRemoved", "name", className, num)
+			
+			if (GetConVarNumber("menuMods_debugMode") != 0) then
+				print("Menu Mods: Removed element of name " .. menumods.string.LevelPush(name, 1) .. ", occurrence " .. num .. ".")
+			end
+		end
+		
+		function self.HTML:RemoveElementByTagName(tagName, num)
+			local exec = "var objects = document.getElementsByTagName(" .. menumods.string.LevelPush(tagName, 1) .. ");\nvar object = objects[" .. (num - 1) .. "];\nif (object != undefined) {\nif ((object.parentNode != undefined) && (object.parentNode != null) && (object.id.indexOf(\"menumods_\") != 0)) {\nobject.parentNode.removeChild(object);\n};\n};\n"
+			
+			self:Call(exec)
+			
+			if (GetConVarNumber("menumods_enableLogging") != 0) then
+				menumods.CreateLog(exec, ".txt")
 			end
 			
-			if self.HTML.MenuMods_URL then
-				if ((self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh) then
-					menumods.hook.Run("PrePageChange", self.HTML.MenuMods_PrevURL, self.HTML.MenuMods_URL)
+			menumods.hook.Run("ElementRemoved", "tagname", className, num)
+			
+			if (GetConVarNumber("menuMods_debugMode") != 0) then
+				print("Menu Mods: Removed element of class name " .. menumods.string.LevelPush(tagName, 1) .. ", occurrence " .. num .. ".")
+			end
+		end
+		
+		function self.HTML:OnDocumentReady(url)
+			self.ShouldRefresh = true
+		end
+		
+		function self:UpdateHTML()
+			if self.HTML then
+				if (not MenuMods_UpdatingURL) then
+					menumods.hook.Run("PageThink")
 					
-					MenuMods_IDs = {}
+					MenuMods_UpdatingURL = true
+					
+					self.HTML:Call("lua.Run(\"pnlMainMenu.HTML.MenuMods_URL = \\\"\" + document.URL + \"\\\"; MenuMods_UpdatingURL = false\")")
 				end
 				
-				local j = 1
-				local tableLength = #MenuMods_Elements
+				if (not self.HTML.MenuModsElements) then
+					self.HTML.MenuModsElements = {}
+				end
 				
-				for i = 1, tableLength do
-					local k = MenuMods_Elements[j]
-					local v = MenuMods_ElementTables[k]
+				if self.HTML.MenuMods_URL then
+					if ((self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh) then
+						menumods.hook.Run("PrePageChange", self.HTML.MenuMods_PrevURL, self.HTML.MenuMods_URL)
+						
+						MenuMods_IDs = {}
+					end
 					
-					if v then
-						if (not isbool(v.prevDisabled)) then
-							v.prevDisabled = false
-						end
+					local j = 1
+					local tableLength = #MenuMods_Elements
+					
+					for i = 1, tableLength do
+						local k = MenuMods_Elements[j]
+						local v = MenuMods_ElementTables[k]
 						
-						if (not isbool(v.prevShow)) then
-							v.prevShow = true
-						end
-						
-						if (not v.disabled) then
-							local show = true
-							
-							if (v.show != nil) then
-								if isfunction(v.show) then
-									if (not v.show()) then
-										show = false
-									end
-								elseif (not v.show) then
-									show = false
-								end
+						if v then
+							if (not isbool(v.prevDisabled)) then
+								v.prevDisabled = false
 							end
 							
-							if show then
-								if ((not self.HTML.MenuModsElements[k]) or (self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh or (not v.prevShow) or v.prevDisabled) then
-									local function handleError( err )
-										print("[ERROR] Menu Mods: Identifier \"" .. k .. "\": " .. err)
-									end
-									
-									local exec
-									
-									if (not v.modifyExisting) then
-										exec = function()
-											self.HTML:CreateElement(k, self.HTML.MenuMods_URL, v.urls, v.tag, v.class, v.parentClass, v.searchType, v.parentNum, v.onClick, v.content, unpack(v.attributes))
+							if (not isbool(v.prevShow)) then
+								v.prevShow = true
+							end
+							
+							if (not v.disabled) then
+								local show = true
+								
+								if (v.show != nil) then
+									if isfunction(v.show) then
+										if (not v.show()) then
+											show = false
 										end
-									else
-										exec = function()
-											self.HTML:ModifyElement(self.HTML.MenuMods_URL, v.urls, v.class, v.searchType, v.num, v.onClick, v.content, unpack(v.attributes))
-										end
+									elseif (not v.show) then
+										show = false
 									end
+								end
+								
+								if show then
+									if ((not self.HTML.MenuModsElements[k]) or (self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh or (not v.prevShow) or v.prevDisabled) then
+										local function handleError( err )
+											print("[ERROR] Menu Mods: Identifier \"" .. k .. "\": " .. err)
+										end
+										
+										local exec
+										
+										if (not v.modifyExisting) then
+											exec = function()
+												self.HTML:CreateElement(k, self.HTML.MenuMods_URL, v.urls, v.tag, v.class, v.parentClass, v.searchType, v.parentNum, v.onClick, v.content, unpack(v.attributes))
+											end
+										else
+											exec = function()
+												self.HTML:ModifyElement(self.HTML.MenuMods_URL, v.urls, v.class, v.searchType, v.num, v.onClick, v.content, unpack(v.attributes))
+											end
+										end
+										
+										xpcall(exec, handleError)
+										
+										v = MenuMods_ElementTables[k]
+										
+										self.HTML.MenuModsElements[k] = true
+									end
+								elseif (v.id and (not v.modifyExisting)) then
+									self.HTML:RemoveElement(v.id)
 									
-									xpcall(exec, handleError)
-									
-									v = MenuMods_ElementTables[k]
-									
-									self.HTML.MenuModsElements[k] = true
+									self.HTML.MenuModsElements[k] = nil
 								end
 							elseif (v.id and (not v.modifyExisting)) then
 								self.HTML:RemoveElement(v.id)
 								
 								self.HTML.MenuModsElements[k] = nil
 							end
-						elseif (v.id and (not v.modifyExisting)) then
-							self.HTML:RemoveElement(v.id)
 							
-							self.HTML.MenuModsElements[k] = nil
+							v.prevDisabled = v.disabled
+							v.prevShow = v.show
+							
+							j = j + 1
+						else
+							table.remove(MenuMods_Elements, j)
 						end
-						
-						v.prevDisabled = v.disabled
-						v.prevShow = v.show
-						
-						j = j + 1
-					else
-						table.remove(MenuMods_Elements, j)
 					end
+					
+					self.HTML.ShouldRefresh = false
+					
+					if ((self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh) then
+						menumods.hook.Run("PostPageChange", self.HTML.MenuMods_PrevURL, self.HTML.MenuMods_URL)
+					end
+					
+					self.HTML.MenuMods_PrevURL = self.HTML.MenuMods_URL
 				end
-				
-				self.HTML.ShouldRefresh = false
-				
-				if ((self.HTML.MenuMods_URL != self.HTML.MenuMods_PrevURL) or self.HTML.ShouldRefresh) then
-					menumods.hook.Run("PostPageChange", self.HTML.MenuMods_PrevURL, self.HTML.MenuMods_URL)
-				end
-				
-				self.HTML.MenuMods_PrevURL = self.HTML.MenuMods_URL
 			end
 		end
-	end
-	
-	if self.HTML then
-		menumods.hook.Run("Initialize")
 		
-		self.MenuMods_HasInitialized = true
-		
-		print("Menu Mods has been initialized.")
+		if self.HTML then
+			menumods.hook.Run("Initialize")
+			
+			self.MenuMods_HasInitialized = true
+			
+			print("Menu Mods has been initialized.")
+		end
 	end
 end
+
+if (not (pnlMainMenu or pnlMainMenu:IsValid())) then return end
 
 if (not pnlMainMenu.MenuMods_HasCreatedFuncs) then
 	local PanelInit_Old = pnlMainMenu.Init
@@ -716,7 +711,7 @@ if (not pnlMainMenu.MenuMods_HasCreatedFuncs) then
 		end
 		
 		if (not self.MenuMods_HasInitialized) then
-			MenuMods_Init(self)
+			MenuMods_PanelInit(self)
 		end
 		
 		if self.UpdateHTML then
@@ -733,7 +728,7 @@ if (not pnlMainMenu.MenuMods_HasCreatedFuncs) then
 		end
 		
 		if (not self.MenuMods_HasInitialized) then
-			MenuMods_Init(self)
+			MenuMods_PanelInit(self)
 		end
 		
 		if self.UpdateHTML then
