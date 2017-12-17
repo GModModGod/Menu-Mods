@@ -10,7 +10,9 @@ if (not MenuMods_Initialized) then
 	function menumods.include(filename)
 		local exec = CompileString(file.Read(("lua/" .. filename), "GAME"), filename, true)
 		
-		exec()
+		if isfunction(exec) then
+			exec()
+		end
 	end
 	
 	local MenuMods_ElementTables = {}
@@ -695,6 +697,8 @@ if (not MenuMods_Initialized) then
 			print("Menu Mods has been initialized.")
 		end
 	end
+	
+	menumods.include("includes/extensions/menumods_net.lua")
 end
 
 if (not (pnlMainMenu or pnlMainMenu:IsValid())) then return end

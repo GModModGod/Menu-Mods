@@ -96,7 +96,9 @@ local function Mount()
 						print("[ERROR] " .. err)
 					end
 					
-					xpcall(exec, handleError)
+					if isfunction(exec) then
+						xpcall(exec, handleError)
+					end
 					
 					FileTable[filename] = true
 				end
