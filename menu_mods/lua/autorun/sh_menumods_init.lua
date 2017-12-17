@@ -3,6 +3,67 @@ if SERVER then
 	AddCSLuaFile()
 end
 
+menumods = {}
+menumods.string = {}
+
+local escChars = {
+	{"\a", "a"},
+	{"\b", "b"},
+	{"\f", "f"},
+	{"\n", "n"},
+	{"\r", "r"},
+	{"\t", "t"},
+	{"\v", "v"},
+	{"\"", "\""},
+	{"\'", "\'"},
+}
+
+function menumods.string.LevelPush(str, numLevels, noOuterQuotes)
+	local numLevels_new = numLevels
+	
+	if (not numLevels_new) then
+		numLevels_new = 1
+	end
+	
+	local newString = ("" .. str)
+	
+	for i = 1, numLevels_new do
+		newString = string.Replace(newString, "\\", "\\\\")
+		
+		for k, v in pairs(escChars) do
+			newString = string.gsub(newString, string.PatternSafe(v[1]), ("\\" .. string.PatternSafe(v[2])))
+		end
+		
+		if (not noOuterQuotes) then
+			newString = ("\"" .. newString .. "\"")
+		end
+	end
+	
+	return newString
+end
+
+function menumods.string.LevelPop(str, numLevels)
+	local numLevels_new = numLevels
+	
+	if (not numLevels_new) then
+		numLevels_new = 1
+	end
+	
+	local newString = ("" .. str)
+	
+	for i = 1, numLevels_new do
+		for k, v in pairs(escChars) do
+			newString = string.gsub(newString, ("^" .. string.PatternSafe(v[1])), "")
+			newString = string.gsub(newString, ("([^\\])" .. string.PatternSafe(v[1])), "%1")
+			newString = string.Replace(newString, ("\\" .. v[2]), v[1])
+		end
+		
+		newString = string.Replace(newString, "\\\\", "\\")
+	end
+	
+	return newString
+end
+
 include("includes/modules/luahtml.lua")
 include("includes/modules/luajs.lua")
 
@@ -116,4 +177,8 @@ for k, v in pairs(luajs.GetClasses()) do
 			end
 		end
 	end
+end
+
+if CLIENT then
+	include("includes/extensions/menumods_net.lua")
 end
