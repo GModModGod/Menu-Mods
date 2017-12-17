@@ -6,6 +6,11 @@ end
 include("includes/modules/luahtml.lua")
 include("includes/modules/luajs.lua")
 
+if SERVER then
+	AddCSLuaFile("includes/modules/luahtml.lua")
+	AddCSLuaFile("includes/modules/luajs.lua")
+end
+
 local files, dirs = file.Find("lua/htmldocs/*.lua", "GAME")
 
 for k, v in ipairs(files) do
