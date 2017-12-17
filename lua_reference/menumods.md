@@ -239,6 +239,14 @@ Returns:
 
 The menumods net library is similar to the regular net library, only instead of sending data between the client and server states, this library sends data between the menu and client states.
 
+### menumods.net.IsConnected()
+
+Returns if the client state is active and currently using the net library.
+
+Returns:
+
+- boolean isConnected: Whether or not the client state is connected.
+
 ### menumods.net.Start(identifier)
 
 Starts a new net message to send to either the client or menu state.
@@ -326,4 +334,64 @@ Writes a value with a valid type to the current net message.
 
 Arguments:
 
-- any val: The type to write.
+- any val: The value to write.
+
+### menumods.net.ReadAngle()
+
+Reads an angle from the current net message.
+
+Returns:
+
+- angle val: The angle read.
+
+### menumods.net.ReadBool()
+
+Reads a boolean from the current net message.
+
+Returns:
+
+- boolean val: The boolean read.
+
+### menumods.net.ReadNumber()
+
+Reads a number from the current net message.
+
+Returns:
+
+- number val: The number read.
+
+### menumods.net.ReadString()
+
+Reads a string from the current net message.
+
+Returns:
+
+- string val: The string read.
+
+### menumods.net.ReadTable(newTab)
+
+Reads a table from the current net message.
+
+Arguments:
+
+- table newTab: If specified, fills this table with the values from the read table.
+
+Returns:
+
+- table val: The table read.
+
+### menumods.net.ReadVector()
+
+Reads a vector from the current net message.
+
+Returns:
+
+- vector val: The vector read.
+
+### menumods.net.ReadType()
+
+Reads a value with a valid type from the current net message.
+
+Returns:
+
+- any val: The value read.
