@@ -65,7 +65,7 @@ Called when the page thinks.
 
 Called when the main panel thinks.
 
-IMPORTANT: When running JavaScript inside a thinking hook, use "PageThink" instead. Otherwise, the JavaScript queue will grow faster than the code can be executed, resulting in increasing lag.
+IMPORTANT: When running JavaScript inside a thinking hook, use "PageThink" instead. Otherwise, the JavaScript queue will grow faster than the code can be executed, resulting in gradually increasing lag.
 
 ### Initialize()
 
