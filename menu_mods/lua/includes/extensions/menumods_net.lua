@@ -583,6 +583,8 @@ function menumods.net.Receive(identifier, func)
 	NetReceiveFuncs[identifier] = func
 end
 
+menumods.net.IsValidType = menumods.IsValidType
+
 function menumods.net.WriteAngle(val)
 	if ((not istable(CurrMsg_Send)) or (not isstring(CurrMsg_Send[1])) or (not CurrMsg_Send[2]:IsValid())) then
 		if CurrMsg_Send[2]:IsValid() then
