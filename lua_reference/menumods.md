@@ -234,3 +234,96 @@ Returns a table of all Menu Mods hooks.
 Returns:
 
 - table tab: The table of hooks.
+
+## menumods.net
+
+The menumods net library is similar to the regular net library, only instead of sending data between the client and server states, this library sends data between the menu and client states.
+
+### menumods.net.Start(identifier)
+
+Starts a new net message to send to either the client or menu state.
+
+Arguments:
+
+- string identifier: The unique identifier used to name the net message.
+
+### menumods.net.Send()
+
+Sends the current net message to either the client or menu state.
+
+### menumods.net.Receive(identifier, func)
+
+Adds a function that is run when a net message with the specified identifier is received.
+
+Arguments:
+
+- string identifier: The unique identifier of the net message.
+- function func: The function to run when the message is received. It has no arguments.
+
+### menumods.net.IsValidType(val)
+
+Returns if the value is of a valid type that can be used with the function "menumods.net.WriteType".
+
+Arguments:
+
+- any val: The value to check.
+
+Returns:
+
+- boolean isValid: Whether or not the type is valid.
+
+### menumods.net.WriteAngle(val)
+
+Writes an angle to the current net message.
+
+Arguments:
+
+- angle val: The angle to write.
+
+### menumods.net.WriteBool(val)
+
+Writes a boolean to the current net message.
+
+Arguments:
+
+- boolean val: The boolean to write.
+
+### menumods.net.WriteNumber(val)
+
+Writes a number to the current net message.
+
+Arguments:
+
+- number val: The number to write.
+
+### menumods.net.WriteString(val)
+
+Writes a string to the current net message.
+
+Arguments:
+
+- string val: The string to write.
+
+### menumods.net.WriteTable(val)
+
+Writes a table to the current net message.
+
+Arguments:
+
+- table val: The table to write.
+
+### menumods.net.WriteVector(val)
+
+Writes a vector to the current net message.
+
+Arguments:
+
+- vector val: The vector to write.
+
+### menumods.net.WriteType(val)
+
+Writes a value with a valid type to the current net message.
+
+Arguments:
+
+- any val: The type to write.
