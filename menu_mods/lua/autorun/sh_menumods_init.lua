@@ -67,6 +67,11 @@ end
 include("includes/modules/luahtml.lua")
 include("includes/modules/luajs.lua")
 
+if SERVER then
+	AddCSLuaFile("includes/modules/luahtml.lua")
+	AddCSLuaFile("includes/modules/luajs.lua")
+end
+
 local files, dirs = file.Find("lua/htmldocs/*.lua", "GAME")
 
 for k, v in ipairs(files) do
@@ -181,4 +186,7 @@ end
 
 if CLIENT then
 	include("includes/extensions/menumods_net.lua")
+elseif SERVER then
+	AddCSLuaFile("includes/extensions/menumods_net.lua")
+	AddCSLuaFile("includes/modules/netdata.lua")
 end
