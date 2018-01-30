@@ -63,7 +63,7 @@ function menumods.string.ReadValues(str, numVals)
 			local endsWithSDQ = (sufficientLen and endsWithDQ and string.find(currStr, "\\\"$"))
 			local endsWithSSQ = (sufficientLen and endsWithSQ and string.find(currStr, "\\\'$"))
 			
-			if ((endsWithSemi and (not startsWithDQ) and (not startsWithSQ)) or (endsWithDQ and (not endsWithSDQ) and startsWithDQ) or (endsWithSQ and (not endsWithSSQ) and startsWithSQ) or ((endsWithSDQ or endsWithSSQ) and (not (startsWithDQ or startsWithSQ)))) then
+			if ((str == "") or (endsWithSemi and (not startsWithDQ) and (not startsWithSQ)) or (endsWithDQ and (not endsWithSDQ) and startsWithDQ) or (endsWithSQ and (not endsWithSSQ) and startsWithSQ)) then
 				if endsWithSemi then
 					if (currStr != "") then
 						currStr = string.sub(currStr, 1, (#currStr - 1))
