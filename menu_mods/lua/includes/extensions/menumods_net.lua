@@ -246,7 +246,11 @@ menumods.string.WriteTable = function(str, tab, excludedTabs, tree)
 		tree = {}
 	end
 	
-	excludedTabs[tab] = tree
+	excludedTabs[tab] = {}
+	
+	for k, v in ipairs(tree) do
+		excludedTabs[tab][k] = v
+	end
 	
 	local newTab = {}
 	local subTabs = {}
