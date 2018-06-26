@@ -96,6 +96,7 @@ if (not MenuMods_Initialized) then
 		for i = 1, numLevels_new do
 			for k, v in pairs(escChars) do
 				newString = string.gsub(newString, string.PatternSafe(v[1]), "")
+				newString = string.gsub(newString, ("^\\" .. string.PatternSafe(v[2])), string.PatternSafe(v[1]))
 				newString = string.gsub(newString, ("([^\\])\\" .. string.PatternSafe(v[2])), ("%1" .. string.PatternSafe(v[1])))
 			end
 			
