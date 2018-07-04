@@ -75,48 +75,52 @@ end
 local files, dirs = file.Find("lua/htmldocs/*.lua", "GAME")
 
 for k, v in ipairs(files) do
-	local startPos, endPos = string.find(v, "%.lua$", 1, false)
-	
 	if (not dirs[k]) then
 		dirs[k] = "lua/htmldocs"
 	end
 	
-	if startPos then
-		local name = string.sub(v, 1, (startPos - 1))
+	local filename = (dirs[k] .. "/" .. v)
+	
+	if (not HTMLFileTable[filename]) then
+		local startPos, endPos = string.find(v, "%.lua$")
 		
-		local shouldMount = true
-		
-		local dirTab = string.Explode("/", dirs[k], false)
-		
-		if ((#dirTab == 3) and (name == "init")) then
-			name = string.lower(dirTab[#dirTab])
-		elseif (#dirTab != 2) then
-			shouldMount = false
-		end
-		
-		if shouldMount then
-			local fullPath = string.gsub((dirs[k] .. "/" .. v), "^lua/", "", 1)
+		if startPos then
+			local name = string.sub(v, 1, (startPos - 1))
 			
-			LUA_HTML = {}
+			local shouldMount = true
 			
-			LUA_HTML.ClassName = name
+			local dirTab = string.Explode("/", dirs[k], false)
 			
-			if SERVER then
-				AddCSLuaFile(fullPath)
+			if ((#dirTab == 3) and (name == "init")) then
+				name = string.lower(dirTab[#dirTab])
+			elseif (#dirTab != 2) then
+				shouldMount = false
 			end
 			
-			include(fullPath)
-			
-			if (not LUA_HTML.Base) then
-				LUA_HTML.Base = "base_html"
+			if shouldMount then
+				local fullPath = string.gsub((dirs[k] .. "/" .. v), "^lua/", "")
+				
+				LUA_HTML = {}
+				
+				LUA_HTML.ClassName = name
+				
+				if SERVER then
+					AddCSLuaFile(fullPath)
+				end
+				
+				include(fullPath)
+				
+				if (not LUA_HTML.Base) then
+					LUA_HTML.Base = "base_html"
+				end
+				
+				luahtml.Register(LUA_HTML, name)
 			end
-			
-			luahtml.Register(LUA_HTML, name)
 		end
+		
+		HTMLFileTable[filename] = true
 	end
 end
-
-LUA_HTML = nil
 
 for k, v in pairs(luahtml.GetClasses()) do
 	if istable(v.BaseClass) then
@@ -131,44 +135,50 @@ end
 local files, dirs = file.Find("lua/jsdocs/*.lua", "GAME")
 
 for k, v in ipairs(files) do
-	local startPos, endPos = string.find(v, "%.lua$", 1, false)
-	
 	if (not dirs[k]) then
 		dirs[k] = "lua/jsdocs"
 	end
 	
-	if startPos then
-		local name = string.sub(v, 1, (startPos - 1))
+	local filename = (dirs[k] .. "/" .. v)
+	
+	if (not JSFileTable[filename]) then
+		local startPos, endPos = string.find(v, "%.lua$")
 		
-		local shouldMount = true
-		
-		local dirTab = string.Explode("/", dirs[k], false)
-		
-		if ((#dirTab == 3) and (name == "init")) then
-			name = string.lower(dirTab[#dirTab])
-		elseif (#dirTab != 2) then
-			shouldMount = false
-		end
-		
-		if shouldMount then
-			local fullPath = string.gsub((dirs[k] .. "/" .. v), "^lua/", "", 1)
+		if startPos then
+			local name = string.sub(v, 1, (startPos - 1))
 			
-			LUA_JS = {}
+			local shouldMount = true
 			
-			LUA_JS.ClassName = name
+			local dirTab = string.Explode("/", dirs[k], false)
 			
-			if SERVER then
-				AddCSLuaFile(fullPath)
+			if ((#dirTab == 3) and (name == "init")) then
+				name = string.lower(dirTab[#dirTab])
+			elseif (#dirTab != 2) then
+				shouldMount = false
 			end
 			
-			include(fullPath)
-			
-			if (not LUA_JS.Base) then
-				LUA_JS.Base = "base_js"
+			if shouldMount then
+				local fullPath = string.gsub((dirs[k] .. "/" .. v), "^lua/")
+				
+				LUA_JS = {}
+				
+				LUA_JS.ClassName = name
+				
+				if SERVER then
+					AddCSLuaFile(fullPath)
+				end
+				
+				include(fullPath)
+				
+				if (not LUA_JS.Base) then
+					LUA_JS.Base = "base_js"
+				end
+				
+				luajs.Register(LUA_JS, name)
 			end
-			
-			luajs.Register(LUA_JS, name)
 		end
+		
+		JSFileTable[filename] = true
 	end
 end
 
