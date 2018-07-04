@@ -3,7 +3,7 @@ local tickRateDefault = 30
 
 if MENU_DLL then
 	CreateConVar("menumods_net_enabled", 1, FCVAR_ARCHIVE)
-	CreateConVar("menumods_net_tickrate", tostring(tickRateDefault), FCVAR_ARCHIVE)
+	CreateConVar("menumods_net_tickRate", tostring(tickRateDefault), FCVAR_ARCHIVE)
 end
 
 local menumods_CanCreateEntities = false
@@ -1274,7 +1274,7 @@ local function Think()
 	
 	if (MENU_DLL and IsInGame() and ShouldSendMsg) then
 		local newEnabled = (GetConVarNumber("menumods_net_enabled") != 0)
-		local newTickRate = GetConVarNumber("menumods_net_tickrate")
+		local newTickRate = GetConVarNumber("menumods_net_tickRate")
 		
 		if ((NetEnabled != newEnabled) or (CurrTickRate != newTickRate)) then
 			menumods.net.Start("menumods_net_update")
