@@ -14,8 +14,8 @@ Once downloaded, place the folder named "menu_mods" inside the "addons" folder i
 
 Name | Default | Description
 ---- | ------- | -----------
-menuMods_debugMode | 0 | Enables printing extra debug info to the console.
-menuMods_enableLogging | 0 | Enables saving logs of extra debug info into the folder "data/menu_mods/logs".
+menumods_debugMode | 0 | Enables printing extra debug info to the console.
+menumods_enableLogging | 0 | Enables saving logs of extra debug info into the folder "data/menu_mods/logs".
 
 ## Tutorials
 
