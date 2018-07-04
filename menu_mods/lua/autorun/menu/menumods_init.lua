@@ -233,7 +233,7 @@ for k, v in pairs(files) do
 	end
 end
 
-local ContentChanged = true
+local ContentChanged = false
 
 local FileTable = {
 	["lua/autorun/menu/menumods_init.lua"] = true,
@@ -397,7 +397,7 @@ local function Mount()
 end
 
 local function GameContentChanged()
-	ContentChanged = false
+	ContentChanged = true
 end
 
 local function Think()

@@ -1,6 +1,6 @@
 
-CreateConVar("menuMods_debugMode", 0, FCVAR_ARCHIVE)
-CreateConVar("menuMods_enableLogging", 0, FCVAR_ARCHIVE)
+CreateConVar("menumods_debugMode", 0, FCVAR_ARCHIVE)
+CreateConVar("menumods_enableLogging", 0, FCVAR_ARCHIVE)
 
 menumods.hook = {}
 menumods.string = {}
@@ -406,7 +406,7 @@ local function MenuMods_PanelInit(self)
 				menumods.CreateLog(exec, ".txt")
 			end
 			
-			if (GetConVarNumber("menuMods_debugMode") != 0) then
+			if (GetConVarNumber("menumods_debugMode") != 0) then
 				print("Menu Mods: Created element of class " .. menumods.string.LevelPush(class, 1) .. " parented to element of class " .. menumods.string.LevelPush(parentClass, 1) .. ".")
 			end
 			
@@ -482,7 +482,7 @@ local function MenuMods_PanelInit(self)
 				menumods.CreateLog(exec, ".txt")
 			end
 			
-			if (GetConVarNumber("menuMods_debugMode") != 0) then
+			if (GetConVarNumber("menumods_debugMode") != 0) then
 				print("Menu Mods: Modified element of class " .. menumods.string.LevelPush(class, 1) .. ".")
 			end
 			
@@ -503,7 +503,7 @@ local function MenuMods_PanelInit(self)
 		
 		menumods.RemoveID(id)
 		
-		if (GetConVarNumber("menuMods_debugMode") != 0) then
+		if (GetConVarNumber("menumods_debugMode") != 0) then
 			print("Menu Mods: Removed element of Menu Mods ID " .. menumods.string.LevelPush(id, 1) .. ".")
 		end
 	end
@@ -519,7 +519,7 @@ local function MenuMods_PanelInit(self)
 		
 		menumods.hook.Run("ElementRemoved", "id", id)
 		
-		if (GetConVarNumber("menuMods_debugMode") != 0) then
+		if (GetConVarNumber("menumods_debugMode") != 0) then
 			print("Menu Mods: Removed element of ID " .. menumods.string.LevelPush(id, 1) .. ".")
 		end
 	end
@@ -535,7 +535,7 @@ local function MenuMods_PanelInit(self)
 		
 		menumods.hook.Run("ElementRemoved", "classname", className, num)
 		
-		if (GetConVarNumber("menuMods_debugMode") != 0) then
+		if (GetConVarNumber("menumods_debugMode") != 0) then
 			print("Menu Mods: Removed element of class name " .. menumods.string.LevelPush(className, 1) .. ", occurrence " .. num .. ".")
 		end
 	end
@@ -551,7 +551,7 @@ local function MenuMods_PanelInit(self)
 		
 		menumods.hook.Run("ElementRemoved", "name", className, num)
 		
-		if (GetConVarNumber("menuMods_debugMode") != 0) then
+		if (GetConVarNumber("menumods_debugMode") != 0) then
 			print("Menu Mods: Removed element of name " .. menumods.string.LevelPush(name, 1) .. ", occurrence " .. num .. ".")
 		end
 	end
@@ -567,7 +567,7 @@ local function MenuMods_PanelInit(self)
 		
 		menumods.hook.Run("ElementRemoved", "tagname", className, num)
 		
-		if (GetConVarNumber("menuMods_debugMode") != 0) then
+		if (GetConVarNumber("menumods_debugMode") != 0) then
 			print("Menu Mods: Removed element of class name " .. menumods.string.LevelPush(tagName, 1) .. ", occurrence " .. num .. ".")
 		end
 	end
