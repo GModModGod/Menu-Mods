@@ -69,7 +69,7 @@ function NetDatas.base_netdata:OnWriteToFile(filename)
 	
 end
 
-function NetDatas.base_netdata:OnReadFromFile(filename, dir)
+function NetDatas.base_netdata:OnReadFromFile(filename, dir, oldData)
 	
 end
 
@@ -105,72 +105,66 @@ function NetDatas.base_netdata:WriteDataToFile(filename)
 		end
 	end
 	
-	self:OnWriteToFile(filename)
-	
-	local compressedData = util.Compress(self.Data)
-	
-	if (not compressedData) then
-		compressedData = ""
-	end
-	
-	file.Write(filename, compressedData)
-end
-
-function NetDatas.base_netdata:ReadDataFromFile(filename, dir)
-	if (not file.Exists(filename, dir)) then return end
-	
-	local compressedData = file.Read(filename, dir)
-	
-	local data = util.Decompress(compressedData)
+	local data = self.Data
 	
 	if (not data) then
 		data = ""
 	end
 	
+	file.Write(filename, data)
+	
+	self:OnWriteToFile(filename)
+end
+
+function NetDatas.base_netdata:ReadDataFromFile(filename, dir)
+	if (not file.Exists(filename, dir)) then return end
+	
+	local data = file.Read(filename, dir)
+	
+	if (not data) then
+		data = ""
+	end
+	
+	local oldData = "" .. self.Data
+	
 	self.Data = data
 	
-	self:OnReadFromFile(filename, dir)
+	self:OnReadFromFile(filename, dir, oldData)
 end
 
 function NetDatas.base_netdata:WriteAngle(val)
-	if (not isangle(val)) then return end
-	
 	self.Data = menumods.string.WriteAngle(self.Data, val)
 end
 
 function NetDatas.base_netdata:WriteBool(val)
-	if (not isbool(val)) then return end
-	
 	self.Data = menumods.string.WriteBool(self.Data, val)
 end
 
 function NetDatas.base_netdata:WriteNumber(val)
-	if (not isnumber(val)) then return end
-	
 	self.Data = menumods.string.WriteNumber(self.Data, val)
 end
 
 function NetDatas.base_netdata:WriteString(val)
-	if (not isstring(val)) then return end
-	
 	self.Data = menumods.string.WriteString(self.Data, val)
 end
 
 function NetDatas.base_netdata:WriteTable(val)
-	if (not istable(val)) then return end
-	
 	self.Data = menumods.string.WriteTable(self.Data, val)
 end
 
+function NetDatas.base_netdata:WriteEntity(val)
+	self.Data = menumods.string.WriteEntity(self.Data, val)
+end
+
+function NetDatas.base_netdata:WritePanel(val)
+	self.Data = menumods.string.WritePanel(self.Data, val)
+end
+
 function NetDatas.base_netdata:WriteVector(val)
-	if (not isvector(val)) then return end
-	
 	self.Data = menumods.string.WriteVector(self.Data, val)
 end
 
 function NetDatas.base_netdata:WriteType(val)
-	if (not menumods.IsValidType(val)) then return end
-	
 	self.Data = menumods.string.WriteType(self.Data, val)
 end
 
@@ -208,6 +202,22 @@ end
 
 function NetDatas.base_netdata:ReadTable(newTab)
 	local newVal, newData = menumods.string.ReadTable(self.Data, newTab)
+	
+	self.Data = newData
+	
+	return newVal
+end
+
+function NetDatas.base_netdata:ReadEntity()
+	local newVal, newData = menumods.string.ReadEntity(self.Data)
+	
+	self.Data = newData
+	
+	return newVal
+end
+
+function NetDatas.base_netdata:ReadPanel()
+	local newVal, newData = menumods.string.ReadTable(self.Data)
 	
 	self.Data = newData
 	
