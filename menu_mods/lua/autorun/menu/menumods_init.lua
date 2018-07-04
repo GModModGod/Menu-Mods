@@ -409,6 +409,7 @@ local function Think()
 	end
 end
 
+hook.Add("GameContentChanged", "MenuMods_GameContentChanged", GameContentChanged)
 hook.Add("Think", "MenuMods_GameContentChanged", Think)
 
 Mount()
