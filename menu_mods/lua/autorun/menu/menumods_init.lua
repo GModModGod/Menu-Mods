@@ -397,7 +397,7 @@ local function Mount()
 end
 
 local function GameContentChanged()
-	ContentChanged = true
+	ContentChanged = false
 end
 
 local function Think()
@@ -409,7 +409,7 @@ local function Think()
 	end
 end
 
-hook.Add("GameContentChanged", "MenuMods_GameContentChanged", GameContentChanged)
+hook.Add("Think", "MenuMods_GameContentChanged", Think)
 
 Mount()
 
