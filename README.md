@@ -14,8 +14,11 @@ Once downloaded, place the folder named "menu_mods" inside the "addons" folder i
 
 Name | Default | Description
 ---- | ------- | -----------
+menumods_enabled | 1 | Enables the mounting of Lua files in the menu state. Will disable the files only after restarting Garry's Mod.
 menumods_debugMode | 0 | Enables printing extra debug info to the console.
 menumods_enableLogging | 0 | Enables saving logs of extra debug info into the folder "data/menu_mods/logs".
+menumods_net_enabled | 1 | Enables the Menu Mods net library which sends data between the menu and client states.
+menumods_net_tickRate | 30 | Sets the number of times per second at which net messages are sent between the menu and client states. Set to 0 for one tick every "Think" event.
 
 ## Tutorials
 
