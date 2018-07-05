@@ -21,7 +21,7 @@ UpdateLuaDirs()
 
 menumods = {}
 
-local currDir = "autorun/menu"
+local currDir = "includes"
 
 function menumods.GetFullLuaFileName(filename)
 	local newFileName = "" .. filename
