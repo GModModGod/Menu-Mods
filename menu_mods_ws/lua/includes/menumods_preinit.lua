@@ -8,6 +8,8 @@ local function Think()
 	exec = CompileString(file.Read("lua/includes/menumods_init.lua", "GAME"), "includes/menumods_init.lua", true)
 
 	exec()
+	
+	HasInitialized = true
 end
 
 hook.Add("Think", "MenuMods_Initialize", Think)
