@@ -6,9 +6,13 @@ Menu Mods is a framework for Garry's Mod that allows the user to modify the main
 
 # Getting Started
 
-## Installation
+## Steam Workshop Installation
 
-Once downloaded, place the folder named "menu_mods" inside the "addons" folder in your "garrysmod" directory (usually "C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/garrysmod").
+First, download the "Menu Mods" addon from the Garry's Mod workshop. Then, download this repository and place the folder named "menu_mods_ws" inside the "addons" folder in your "garrysmod" directory (usually "C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/garrysmod").
+
+## Legacy Installation
+
+Download this repository and place the folder named "menu_mods" inside the "addons" folder in your "garrysmod" directory (usually "C:/Program Files (x86)/Steam/steamapps/common/GarrysMod/garrysmod").
 
 ## ConVars
 
