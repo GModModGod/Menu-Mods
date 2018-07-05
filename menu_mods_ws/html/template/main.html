@@ -1,0 +1,55 @@
+
+	<div class="page" ng-controller="ControllerMain">
+
+		<div class="options">
+
+			<ul>
+				<div class="menumods_list1_pos0"></div>
+				<li><img ng-src='../gamemodes/{{Gamemode}}/logo.png' /></li>
+				<div class="menumods_list1_pos1"></div>
+				<li>&nbsp;</li>
+				<div class="menumods_list1_pos2"></div>
+				<li ng-show="InGame"><a ng-click="BackToGame()" ng-Tranny="'resume_game'"></a></li>
+				<div class="menumods_list1_pos3"></div>
+				<li ng-show="InGame">&nbsp;</li>
+				<div class="menumods_list1_pos4"></div>
+				<li><a ng-href="#/newgame/" ng-Tranny="'new_game'"></a></li>
+
+				<div class="menumods_list1_pos5"></div>
+
+				<li><a ng-href="#/servers/" ng-Tranny="'find_mp_game'"></a></li>
+
+				<div class="menumods_list1_pos6"></div>
+
+				<li>&nbsp;</li>
+				
+				<div class="menumods_list1_pos7"></div>
+				<li><a ng-href="#/addons/" ng-Tranny="'addons'"></a></li>
+				<div class="menumods_list1_pos8"></div>
+				<li><a ng-href="#/demos/" ng-Tranny="'demos'"></a></li>
+				<div class="menumods_list1_pos9"></div>
+				<li><a ng-href="#/saves/" ng-Tranny="'saves'"></a></li>
+				<div class="menumods_list1_pos10"></div>
+
+				<li>&nbsp;</li>
+				<div class="menumods_list1_pos11"></div>
+				<li><a ng-click="MenuOption( this, 'OpenOptionsDialog')" ng-Tranny="'options'"></a></li>
+				<div class="menumods_list1_pos12"></div>
+
+				<li>&nbsp;</li>
+				
+				<div class="menumods_list1_pos13"></div>
+				
+				<li ng-show="InGame">
+					<a ng-click="MenuOption( this, 'engine disconnect');" ng-Tranny="'disconnect'"></a>
+				</li>
+				
+				<div class="menumods_list1_pos14"></div>
+				<li><a ng-click="MenuOption( this, 'Quit')" ng-Tranny="'quit'"></a></li>
+				<div class="menumods_list1_pos15"></div>
+
+			</ul>
+
+		</div>
+
+	</div>
