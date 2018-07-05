@@ -1,2 +1,2 @@
 
-lua.Run("local exec = CompileString(file.Read(\"lua/autorun/menu/menumods_init.lua\", \"GAME\"), \"autorun/menu/menumods_init.lua\", true); exec()")
+lua.Run("local exec = CompileString(file.Read(\"lua/includes/menumods_init.lua\", \"GAME\"), \"includes/menumods_init.lua\", true); exec()")
