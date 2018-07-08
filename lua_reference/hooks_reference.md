@@ -73,4 +73,4 @@ IMPORTANT: When running JavaScript inside a thinking hook, use "PageThink" inste
 
 ### Initialize()
 
-Called when Menu Mods initializes.
+Called when the main panel initializes. This can happen more than once.
