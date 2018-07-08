@@ -2,13 +2,13 @@
 
 ### menumods.include(filename)
 
-Includes an outside file.
+Includes an outside file. Works like the normal "include" function.
 
 Arguments:
 
 - string filename: The name of the .lua file to include.
 
-IMPORTANT: This function must be used in place of the "include" function when in the menu state due to a fatal Lua error in which the file is not found. This function also does not support local file paths, so replace any local file paths with the full Lua file path. Example: If you are including the .lua file "lua/autorun/stuff/test.lua" from another file, type `menumods.include("autorun/stuff/test.lua")` in the desired location.
+IMPORTANT: This function must be used in place of the "include" function when in the menu state due to a fatal Lua error in which the file is not found.
 
 ### menumods.CreateLog(content, extension)
 
@@ -296,6 +296,14 @@ Arguments:
 
 - boolean val: The boolean to write.
 
+### menumods.net.WriteEntity(val)
+
+Writes an entity to the current net message.
+
+Arguments:
+
+- Entity val: The entity to write.
+
 ### menumods.net.WriteNumber(val)
 
 Writes a number to the current net message.
@@ -303,6 +311,14 @@ Writes a number to the current net message.
 Arguments:
 
 - number val: The number to write.
+
+### menumods.net.WritePanel(val)
+
+Writes a panel to the current net message. Alias of "menumods.net.WriteEntity".
+
+Arguments:
+
+- Panel val: The panel to write.
 
 ### menumods.net.WriteString(val)
 
@@ -352,6 +368,14 @@ Returns:
 
 - boolean val: The boolean read.
 
+### menumods.net.ReadEntity()
+
+Reads an entity from the current net message.
+
+Returns:
+
+- Entity val: The entity read.
+
 ### menumods.net.ReadNumber()
 
 Reads a number from the current net message.
@@ -359,6 +383,14 @@ Reads a number from the current net message.
 Returns:
 
 - number val: The number read.
+
+### menumods.net.ReadPanel()
+
+Reads a panel from the current net message. Alias of "menumods.net.ReadEntity".
+
+Returns:
+
+- Panel val: The panel read.
 
 ### menumods.net.ReadString()
 
