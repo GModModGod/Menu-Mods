@@ -1,4 +1,8 @@
 
+if MenuMods_PreInit then return end
+
+MenuMods_PreInit = true
+
 local HasInitialized = false
 
 local function Think()
