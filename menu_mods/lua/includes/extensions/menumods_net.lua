@@ -702,15 +702,23 @@ local function WriteEntity(index, str, ent, valueReferences, tree)
 	
 	local entClass
 	
-	if isfunction(ent.GetClass) then
-		entClass = ent:GetClass()
-	elseif isstring(ent.ClassName) then
-		entClass = ent.ClassName
+	if ent:IsValid() then
+		if isfunction(ent.GetClass) then
+			entClass = ent:GetClass()
+		elseif isstring(ent.ClassName) then
+			entClass = ent.ClassName
+		else
+			str = menumods.string.WriteBool(str, false)
+			
+			return str
+		end
+		
+		str = menumods.string.WriteBool(str, true)
 	else
+		str = menumods.string.WriteBool(str, false)
+		
 		return str
 	end
-	
-	str = menumods.string.WriteString(str, entClass)
 	
 	local newReference = {}
 	
@@ -725,6 +733,8 @@ local function WriteEntity(index, str, ent, valueReferences, tree)
 	
 	table.insert(tree, (#tree + 1), 1)
 	table.insert(tree, (#tree + 1), true)
+	
+	str = menumods.string.WriteString(str, entClass)
 	
 	local entType = menumods.IndexToTypeID(index)
 	
@@ -753,6 +763,13 @@ local function ReadEntity(index, str, root, valueReferences, tree)
 	
 	if (not istable(tree)) then
 		tree = {}
+	end
+	
+	local entIsValid
+	entIsValid, str = menumods.string.ReadBool(str)
+	
+	if (not entIsValid) then
+		return NULL, str
 	end
 	
 	local entClass
