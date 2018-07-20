@@ -32,7 +32,61 @@ Arguments:
 
 - string content: The content of the log.
 
-### menumods.FindID(identifier)
+### menumods.NewLuaErrorLogFile(filename, extension)
+
+Changes the destination of logs created with "menumods.LogLuaError" to a new file.
+
+Arguments:
+
+- string filename: The prefix name of the file. (Do not include a file extension.)
+- string extension: The file extension of the new file. (Ex: `".txt"`, `".dat"`, etc.)
+
+### menumods.ChangeLuaErrorLogFile(filename, extension, index)
+
+Changes the destination of logs created with "menumods.LogLuaError" to an already existing file. Will create a new file if the file doesn't exist.
+
+Arguments:
+
+- string filename: The prefix name of the file. (Do not include a file extension.)
+- string extension: The file extension of the new file. (Ex: `".txt"`, `".dat"`, etc.)
+- number index: The index of the file. Will choose the file with the last index if none is provided.
+
+### menumods.LogJavaScript(content)
+
+Logs JavaScript code in the directory "garrysmod/data/menu_mods/logs" with the given content.
+
+Arguments:
+
+- string content: The content of the log.
+
+### menumods.CreateLog(content) DEPRECIATED
+
+Logs JavaScript code in the directory "garrysmod/data/menu_mods/logs" with the given content. Alias of "menumods.LogJavaScript".
+
+Arguments:
+
+- string content: The content of the log.
+
+### menumods.NewJavaScriptLogFile(filename, extension)
+
+Changes the destination of logs created with "menumods.LogJavaScript" to a new file.
+
+Arguments:
+
+- string filename: The prefix name of the file. (Do not include a file extension.)
+- string extension: The file extension of the new file. (Ex: `".txt"`, `".dat"`, etc.)
+
+### menumods.ChangeJavaScriptLogFile(filename, extension, index)
+
+Changes the destination of logs created with "menumods.LogJavaScript" to an already existing file. Will create a new file if the file doesn't exist.
+
+Arguments:
+
+- string filename: The prefix name of the file. (Do not include a file extension.)
+- string extension: The file extension of the new file. (Ex: `".txt"`, `".dat"`, etc.)
+- number index: The index of the file. Will choose the file with the last index if none is provided.
+
+### menumods.FindID(identifier) INTERNAL
 
 A function that is internally used to find unoccupied indices for custom HTML elements.
 
@@ -46,7 +100,7 @@ Returns:
 
 IMPORTANT: It is highly recommended to refrain from using this function unless there is a specific reason for doing so.
 
-### menumods.RemoveID(id)
+### menumods.RemoveID(id) INTERNAL
 
 A function that is internally called to remove assigned identifiers from indices after custom HTML elements have been removed from the page.
 
@@ -85,7 +139,7 @@ Arguments:
 - table data: The data table for the element.
 - function callback: The Lua function to be executed when the option is clicked. It has no arguments.
 
-### menumods.ExecuteElementCallback(identifier)
+### menumods.ExecuteElementCallback(identifier) INTERNAL
 
 A function that is used internally to execute the callbacks of custom HTML elements when they are clicked.
 
