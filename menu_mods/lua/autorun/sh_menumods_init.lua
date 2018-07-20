@@ -28,7 +28,7 @@ function menumods.string.LevelPush(str, numLevels, noOuterQuotes)
 	local newString = ("" .. str)
 	
 	for i = 1, numLevels_new do
-		newString = string.Replace(newString, "\\", "\\\\")
+		newString = string.gsub(newString, "\\", "\\\\")
 		
 		for k, v in pairs(escChars) do
 			newString = string.gsub(newString, string.PatternSafe(v[1]), ("\\" .. string.PatternSafe(v[2])))
