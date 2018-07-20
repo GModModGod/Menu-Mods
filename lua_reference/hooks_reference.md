@@ -77,7 +77,7 @@ Called when the main panel initializes. This can happen more than once.
 
 ### OnLuaError(text, realm, name, id)
 
-Called when a Lua error occurs. Functionally equivalent to the regular "OnLuaError" gamemode hook. Works with errors that occur in the menu state.
+Called when a Lua error occurs. Functionally equivalent to the regular "OnLuaError" gamemode hook. Additionally works with errors that occur in the menu state.
 
 Arguments:
 
