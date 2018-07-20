@@ -20,12 +20,17 @@ end
 UpdateLuaDirs()
 
 menumods = {}
+menumods.hook = {}
 
-local currDir = "includes"
+function menumods.hook.GetTable()
+	return {}
+end
+
+local CurrDir = "includes"
 
 function menumods.GetFullLuaFileName(filename)
 	local newFileName = "" .. filename
-	local prevDir = "" .. currDir
+	local prevDir = "" .. CurrDir
 	
 	local start, endPos = string.find(newFileName, "^[^%/]*")
 	
@@ -62,46 +67,120 @@ function menumods.GetFullLuaFileName(filename)
 	return newFileName, prevDir
 end
 
-function menumods.include(filename)
-	local start, endPos = string.find(filename, "%.lua$")
-	
-	if (not start) then
-		print("[ERROR] Attempted to include a non-Lua file.")
-		
-		return
+local LogFilePrefix = ""
+local LogFileID = ""
+local LogFileExtension = ""
+
+function menumods.NewLuaErrorLogFile(filename, extension)
+	if (not isstring(filename)) then
+		filename = LogFilePrefix
 	end
 	
-	local newFileName, newDir = menumods.GetFullLuaFileName(filename)
+	if ((not isstring(extension)) or (not string.find(extension, "^%."))) then
+		extension = ".txt"
+	end
 	
-	local fullFileName = "lua/" .. newFileName
+	local currID = 1
+	local newFileID
 	
-	if file.Exists(fullFileName, "GAME") then
-		local fileString = file.Read(fullFileName, "GAME")
+	local found = false
+	
+	while (not found) do
+		newFileID = tostring(currID)
 		
-		fileString = "local include = menumods.include; " .. fileString
+		local newFileName = (filename .. newFileID .. extension)
 		
-		local exec = CompileString(fileString, newFileName, true)
-		local function handleError(err)
-			print("[ERROR] " .. err)
+		if (not file.Exists(newFileName, "DATA")) then
+			found = true
 		end
 		
-		local result = {false}
+		currID = currID + 1
+	end
+	
+	if newFileID then
+		LogFilePrefix = filename
+		LogFileID = newFileID
+		LogFileExtension = extension
 		
-		if isfunction(exec) then
-			local prevDir = "" .. currDir
+		return true
+	end
+	
+	return false
+end
+
+function menumods.ChangeLuaErrorLogFile(filename, extension, index)
+	if (not isstring(filename)) then
+		filename = LogFilePrefix
+	end
+	
+	if ((not isstring(extension)) or (not string.find(extension, "^%."))) then
+		extension = ".txt"
+	end
+	
+	local newFileID
+	
+	if ((not isnumber(index)) and (not isstring(index))) then
+		local currID = 1
+		
+		local found = false
+		
+		while (not found) do
+			local currFileID = tostring(currID)
+			local newFileName = (filename .. newFileID .. extension)
 			
-			currDir = newDir
+			if file.Exists(newFileName, "DATA") then
+				newFileID = currFileID
+			else
+				found = true
+			end
 			
-			result = {xpcall(exec, handleError)}
-			
-			currDir = prevDir
+			currID = currID + 1
 		end
 		
-		table.remove(result, 1)
+		if (not newFileID) then
+			newFileID = "1"
+		end
+	else
+		newFileID = tostring(index)
+	end
+	
+	LogFilePrefix = filename
+	LogFileID = newFileID
+	LogFileExtension = extension
+end
+
+function menumods.LogLuaError(content)
+	local logFileName = LogFilePrefix .. LogFileID .. LogFileExtension
+	local CurrDir = ""
+	local dirTab = string.Explode("/", logFileName, false)
+	local dirTabCount = #dirTab
+	
+	for k, v in ipairs(dirTab) do
+		if (k < dirTabCount) then
+			if (k > 1) then
+				CurrDir = CurrDir .. "/" .. v
+			else
+				CurrDir = v
+			end
+			
+			if (not file.IsDir(CurrDir, "DATA")) then
+				file.CreateDir(CurrDir)
+			end
+		else
+			break
+		end
+	end
+	
+	if file.Exists(logFileName, "DATA") then
+		local newContent = "\n" .. content
 		
-		return unpack(result)
+		file.Append(logFileName, newContent)
+	else
+		file.Write(logFileName, content)
 	end
 end
+
+menumods.NewLuaErrorLogFile("menumods/logs/lua_error_log_")
 
 local ConVarTable = {}
 local PrevConVarValues = {}
@@ -166,6 +245,204 @@ CreateClientConVar = function(name, default, shouldSave, ...)
 	return result
 end
 
+CreateConVar("menumods_enableLuaErrorLogging", 0, FCVAR_ARCHIVE)
+
+local hookName = "MenuErrorHandler"
+
+--[[
+local States = {
+	[false] = "Unknown",
+	[1] = "Server",
+	[2] = "Menu",
+	[3] = "Client"
+}
+]]
+
+local AllHooks = hook.GetTable()
+local LuaErrorHooks = AllHooks["OnLuaError"]
+
+local MenuErrorHandler
+
+if istable(LuaErrorHooks) then
+	local MenuErrorHandler_Old = LuaErrorHooks[hookName]
+	
+	if isfunction(MenuErrorHandler_Old) then
+		MenuErrorHandler = MenuErrorHandler_Old
+		
+		hook.Remove("OnLuaError", hookName)
+		
+		LuaErrorHooks[hookName] = nil
+	else
+		MenuErrorHandler = function() end
+	end
+else
+	MenuErrorHandler = function() end
+end
+
+local function SafeEquals(a, b)
+	if (type(a) != type(b)) then
+		return false
+	end
+	
+	return (a == b)
+end
+
+local function HandleErrorFunctionError(err)
+	local text = "[ERROR] " .. err
+	
+	print(text)
+end
+
+local function OnLuaError(text, realm, addonName, addonID, ...)
+	if (not isnumber(realm)) then
+		realm = 0
+	end
+	
+	if (not isstring(addonName)) then
+		addonName = "N/A"
+	end
+	
+	if (not isstring(addonID)) then
+		addonID = nil
+	end
+	
+	MenuErrorHandler(text, realm, addonName, addonID, ...)
+	
+	local allHooks = menumods.hook.GetTable()
+	local luaErrorHooks = allHooks["OnLuaError"]
+	
+	if istable(luaErrorHooks) then
+		for k, v in pairs(luaErrorHooks) do
+			if ((not SafeEquals(k, hookName)) and isfunction(v)) then
+				xpcall(v, HandleErrorFunctionError, text, realm, addonName, addonID, ...)
+			end
+		end
+	end
+
+	if (GetConVarNumber("menumods_enableLuaErrorLogging") != 0) then
+		local errorString = "Addon: " .. addonName .. "\nRealm: " .. tostring(realm) .. "\n" .. text .. "\n"
+		
+		menumods.LogLuaError(errorString)
+	end
+end
+
+function menumods.GetTraceString(level, shouldStop)
+	local shouldStop = shouldStop
+	
+	if (not isfunction(shouldStop)) then
+		shouldStop = function()
+			return false
+		end
+	end
+	
+	local level = level
+	
+	if (not isnumber(level)) then
+		level = 1
+	end
+	
+	local finished = false
+	
+	local str = ""
+	
+	while (not finished) do
+		local info = debug.getinfo(level, "flnSu")
+		
+		if info then
+			local result = shouldStop(info, level)
+			
+			if (not result) then
+				local stringToAdd = string.format("\t%i. %s - %s:%i", level, info.name, info.short_src, info.currentline)
+				
+				if (str != "") then
+					str = str .. "\n" .. stringToAdd
+				else
+					str = stringToAdd
+				end
+				
+				level = level + 1
+			else
+				finished = true
+			end
+		else
+			finished = true
+		end
+	end
+	
+	return str
+end
+
+local function TraceShouldStop()
+	local newInfo = debug.getinfo(6, "f")
+	
+	if (not isfunction(newInfo.func)) then
+		return false
+	end
+	
+	return (newInfo.func == menumods.include)
+end
+
+function menumods.error(err, realm, addonName, addonID, ...)
+	if (not isnumber(realm)) then
+		realm = 0
+	end
+	
+	print(err)
+	
+	OnLuaError(err, realm, addonName, addonID, ...)
+end
+
+local function HandleError(err, realm, addonName, addonID, ...)
+	if (not isnumber(realm)) then
+		realm = 0
+	end
+	
+	local traceString = menumods.GetTraceString(2, TraceShouldStop)
+	local text = "[ERROR] " .. err .. "\n" .. traceString
+	
+	print(text)
+	
+	OnLuaError(text, realm, addonName, addonID, ...)
+end
+
+function menumods.include(filename)
+	local start, endPos = string.find(filename, "%.lua$")
+	
+	if (not start) then
+		print("[ERROR] Attempted to include a non-Lua file.")
+		
+		return
+	end
+	
+	local newFileName, newDir = menumods.GetFullLuaFileName(filename)
+	
+	local fullFileName = "lua/" .. newFileName
+	
+	if file.Exists(fullFileName, "GAME") then
+		local fileString = file.Read(fullFileName, "GAME")
+		
+		fileString = "local include = menumods.include; " .. fileString
+		
+		local exec = CompileString(fileString, newFileName, true)
+		
+		local result = {false}
+		
+		if isfunction(exec) then
+			local prevDir = "" .. CurrDir
+			
+			CurrDir = newDir
+			
+			result = {xpcall(exec, HandleError)}
+			
+			CurrDir = prevDir
+		end
+		
+		table.remove(result, 1)
+		
+		return unpack(result)
+	end
+end
+
 local function SaveConVars()
 	local conVarTab = {}
 	
@@ -206,6 +483,8 @@ local function LoadConVars()
 		end
 	end
 end
+
+hook.Add("OnLuaError", hookName, OnLuaError)
 
 hook.Add("CloseDermaMenus", "MenuMods_SaveConVars", SaveConVars)
 

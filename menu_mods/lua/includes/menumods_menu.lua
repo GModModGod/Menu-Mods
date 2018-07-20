@@ -1,8 +1,7 @@
 
 CreateConVar("menumods_debugMode", 0, FCVAR_ARCHIVE)
-CreateConVar("menumods_enableLogging", 0, FCVAR_ARCHIVE)
+CreateConVar("menumods_enableJavaScriptLogging", 0, FCVAR_ARCHIVE)
 
-menumods.hook = {}
 menumods.string = {}
 
 local MenuMods_ElementTables = {}
@@ -10,33 +9,122 @@ local MenuMods_Elements = {}
 local MenuMods_Hooks = {}
 local MenuMods_IDs = {}
 
-function menumods.CreateLog(content, extension)
-	if (not file.IsDir("menu_mods", "DATA")) then
-		file.CreateDir("menu_mods")
-	end
-	if (not file.IsDir("menu_mods/logs", "DATA")) then
-		file.CreateDir("menu_mods/logs")
+local LogFilePrefix = ""
+local LogFileID = ""
+local LogFileExtension = ""
+
+function menumods.NewJavaScriptLogFile(filename, extension)
+	if (not isstring(filename)) then
+		filename = LogFilePrefix
 	end
 	
-	local currID = 0
-	local filename
+	if ((not isstring(extension)) or (not string.find(extension, "^%."))) then
+		extension = ".txt"
+	end
+	
+	local currID = 1
+	local newFileID
 	
 	local found = false
 	
 	while (not found) do
-		currID = currID + 1
+		newFileID = tostring(currID)
 		
-		filename = ("menu_mods/logs/log_" .. currID .. extension)
+		local newFileName = (filename .. newFileID .. extension)
 		
-		if (not file.Exists(filename, "DATA")) then
+		if (not file.Exists(newFileName, "DATA")) then
 			found = true
+		end
+		
+		currID = currID + 1
+	end
+	
+	if newFileID then
+		LogFilePrefix = filename
+		LogFileID = newFileID
+		LogFileExtension = extension
+		
+		return true
+	end
+	
+	return false
+end
+
+function menumods.ChangeJavaScriptLogFile(filename, extension, index)
+	if (not isstring(filename)) then
+		filename = LogFilePrefix
+	end
+	
+	if ((not isstring(extension)) or (not string.find(extension, "^%."))) then
+		extension = ".txt"
+	end
+	
+	local newFileID
+	
+	if ((not isnumber(index)) and (not isstring(index))) then
+		local currID = 1
+		
+		local found = false
+		
+		while (not found) do
+			local currFileID = tostring(currID)
+			local newFileName = (filename .. newFileID .. extension)
+			
+			if file.Exists(newFileName, "DATA") then
+				newFileID = currFileID
+			else
+				found = true
+			end
+			
+			currID = currID + 1
+		end
+		
+		if (not newFileID) then
+			newFileID = "1"
+		end
+	else
+		newFileID = tostring(index)
+	end
+	
+	LogFilePrefix = filename
+	LogFileID = newFileID
+	LogFileExtension = extension
+end
+
+function menumods.LogJavaScript(content)
+	local logFileName = LogFilePrefix .. LogFileID .. LogFileExtension
+	local currDir = ""
+	local dirTab = string.Explode("/", logFileName, false)
+	local dirTabCount = #dirTab
+	
+	for k, v in ipairs(dirTab) do
+		if (k < dirTabCount) then
+			if (k > 1) then
+				currDir = currDir .. "/" .. v
+			else
+				currDir = v
+			end
+			
+			if (not file.IsDir(currDir, "DATA")) then
+				file.CreateDir(currDir)
+			end
+		else
+			break
 		end
 	end
 	
-	if filename then
-		file.Write(filename, content)
+	if file.Exists(logFileName, "DATA") then
+		local newContent = "\n" .. content
+		
+		file.Append(logFileName, newContent)
+	else
+		file.Write(logFileName, content)
 	end
 end
+
+menumods.CreateLog = menumods.LogJavaScript
+
+menumods.NewJavaScriptLogFile("menumods/logs/javascript_log_")
 
 local escChars = {
 	{"\a", "a"},
@@ -160,6 +248,7 @@ function menumods.hook.Run(eventName, ...)
 end
 
 function menumods.hook.GetTable()
+	--[[
 	local currTable = {}
 	
 	for k, v in pairs(MenuMods_Hooks) do
@@ -172,8 +261,9 @@ function menumods.hook.GetTable()
 			currTable[currIndex][i] = j
 		end
 	end
+	]]
 	
-	return currTable
+	return MenuMods_Hooks
 end
 
 function menumods.AddElement(identifier, data)
@@ -401,8 +491,8 @@ local function MenuMods_PanelInit(self)
 			
 			self:Call(exec)
 			
-			if (GetConVarNumber("menumods_enableLogging") != 0) then
-				menumods.CreateLog(exec, ".txt")
+			if (GetConVarNumber("menumods_enableJavaScriptLogging") != 0) then
+				menumods.LogJavaScript(exec)
 			end
 			
 			if (GetConVarNumber("menumods_debugMode") != 0) then
@@ -477,8 +567,8 @@ local function MenuMods_PanelInit(self)
 			
 			self:Call(exec)
 			
-			if (GetConVarNumber("menumods_enableLogging") != 0) then
-				menumods.CreateLog(exec, ".txt")
+			if (GetConVarNumber("menumods_enableJavaScriptLogging") != 0) then
+				menumods.LogJavaScript(exec)
 			end
 			
 			if (GetConVarNumber("menumods_debugMode") != 0) then
@@ -494,8 +584,8 @@ local function MenuMods_PanelInit(self)
 		
 		self:Call(exec)
 		
-		if (GetConVarNumber("menumods_enableLogging") != 0) then
-			menumods.CreateLog(exec, ".txt")
+		if (GetConVarNumber("menumods_enableJavaScriptLogging") != 0) then
+			menumods.LogJavaScript(exec)
 		end
 		
 		menumods.hook.Run("ElementRemoved", "menumods_id", id)
@@ -512,8 +602,8 @@ local function MenuMods_PanelInit(self)
 		
 		self:Call(exec)
 		
-		if (GetConVarNumber("menumods_enableLogging") != 0) then
-			menumods.CreateLog(exec, ".txt")
+		if (GetConVarNumber("menumods_enableJavaScriptLogging") != 0) then
+			menumods.LogJavaScript(exec)
 		end
 		
 		menumods.hook.Run("ElementRemoved", "id", id)
@@ -528,8 +618,8 @@ local function MenuMods_PanelInit(self)
 		
 		self:Call(exec)
 		
-		if (GetConVarNumber("menumods_enableLogging") != 0) then
-			menumods.CreateLog(exec, ".txt")
+		if (GetConVarNumber("menumods_enableJavaScriptLogging") != 0) then
+			menumods.LogJavaScript(exec)
 		end
 		
 		menumods.hook.Run("ElementRemoved", "classname", className, num)
@@ -544,8 +634,8 @@ local function MenuMods_PanelInit(self)
 		
 		self:Call(exec)
 		
-		if (GetConVarNumber("menumods_enableLogging") != 0) then
-			menumods.CreateLog(exec, ".txt")
+		if (GetConVarNumber("menumods_enableJavaScriptLogging") != 0) then
+			menumods.LogJavaScript(exec)
 		end
 		
 		menumods.hook.Run("ElementRemoved", "name", className, num)
@@ -560,8 +650,8 @@ local function MenuMods_PanelInit(self)
 		
 		self:Call(exec)
 		
-		if (GetConVarNumber("menumods_enableLogging") != 0) then
-			menumods.CreateLog(exec, ".txt")
+		if (GetConVarNumber("menumods_enableJavaScriptLogging") != 0) then
+			menumods.LogJavaScript(exec)
 		end
 		
 		menumods.hook.Run("ElementRemoved", "tagname", className, num)
