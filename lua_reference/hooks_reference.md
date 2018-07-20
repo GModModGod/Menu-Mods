@@ -45,8 +45,8 @@ Called just before the URL changes.
 
 Arguments:
 
-- oldURL: The old URL.
-- newURL: The new URL.
+- string oldURL: The old URL.
+- string newURL: The new URL.
 
 ### PostPageChange(oldURL, newURL)
 
@@ -54,8 +54,8 @@ Called just after the URL changes.
 
 Arguments:
 
-- oldURL: The old URL.
-- newURL: The new URL.
+- string oldURL: The old URL.
+- string newURL: The new URL.
 
 ### PageThink()
 
@@ -69,8 +69,19 @@ Called when the main panel thinks.
 
 NOTE: When in game, this hook will only be called when the pause menu is open.
 
-IMPORTANT: When running JavaScript inside a thinking hook, use "PageThink" instead. Otherwise, the JavaScript queue will grow faster than the code can be executed, resulting in gradually increasing lag.
+IMPORTANT: When running JavaScript inside a thinking hook, use "PageThink" instead. Otherwise, the JavaScript code will be added to the queue faster than it is run, resulting in gradually increasing lag.
 
 ### Initialize()
 
 Called when the main panel initializes. This can happen more than once.
+
+### OnLuaError(text, realm, name, id)
+
+Called when a Lua error occurs. Functionally equivalent to the regular "OnLuaError" gamemode hook. Works with errors that occur in the menu state.
+
+Arguments:
+
+- string text: The error message.
+- number realm: The realm (state) in which the error occurred. Does not seem to work currently.
+- string name: The name of the addon that caused the error. Will be an empty string if the addon is a legacy addon (not a .gma file).
+- string id: The Steam ID of the addon. Will be nil if the addon is a legacy addon (not a .gma file).
