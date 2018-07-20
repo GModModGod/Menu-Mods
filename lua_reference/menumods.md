@@ -98,7 +98,7 @@ Returns:
 
 - number index: The found index.
 
-IMPORTANT: It is highly recommended to refrain from using this function unless there is a specific reason for doing so.
+IMPORTANT: This is an internal function. It is highly recommended to refrain from using it unless there is a specific reason for doing so.
 
 ### menumods.RemoveID(id) INTERNAL
 
@@ -108,7 +108,7 @@ Arguments:
 
 - number id: The index to remove the identifier from.
 
-IMPORTANT: It is highly recommended to refrain from using this function unless there is a specific reason for doing so.
+IMPORTANT: This is an internal function. It is highly recommended to refrain from using it unless there is a specific reason for doing so.
 
 ### menumods.AddElement(identifier, data)
 
@@ -146,6 +146,8 @@ A function that is used internally to execute the callbacks of custom HTML eleme
 Arguments:
 
 - string identifier: The identifier of the HTML element.
+
+IMPORTANT: This is an internal function. It is highly recommended to refrain from using it unless there is a specific reason for doing so.
 
 ### menumods.RemoveElementFromPage(identifier)
 
