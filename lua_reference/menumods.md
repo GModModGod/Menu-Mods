@@ -10,14 +10,27 @@ Arguments:
 
 IMPORTANT: This function must be used in place of the "include" function when in the menu state due to a fatal Lua error in which the file is not found.
 
-### menumods.CreateLog(content, extension)
+NOTE: This function will include the first file of the specified name, regardless of which addon it comes from. Ensure to give your .lua files unique names.
 
-Creates a log in the directory "garrysmod/data/menu_mods/logs" with the given content.
+### menumods.GetFullLuaFileName(filename)
+
+Returns the full path of a .lua file relative to the "lua/" folder (as if you were including the file using "menumods.include").
+
+Arguments:
+
+- string filename: The name of the file. Can be relative to the current file or relative to the "lua/" folder.
+
+Returns:
+
+- string fullFilename: The full path of the file.
+
+### menumods.LogLuaError(content)
+
+Logs a Lua error in the directory "garrysmod/data/menu_mods/logs" with the given content.
 
 Arguments:
 
 - string content: The content of the log.
-- string extension: The file extension of the log. (Ex. `.txt`, `.dat`, etc.)
 
 ### menumods.FindID(identifier)
 
