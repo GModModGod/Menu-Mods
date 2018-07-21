@@ -151,7 +151,10 @@ function menumods.string.LevelPush(str, numLevels, noOuterQuotes)
 		newString = string.gsub(newString, "\\", "\\\\")
 		
 		for k, v in pairs(escChars) do
-			newString = string.gsub(newString, string.PatternSafe(v[1]), ("\\" .. string.PatternSafe(v[2])))
+			local pattern1 = string.PatternSafe(v[1])
+			local pattern2 = string.PatternSafe(v[2])
+			
+			newString = string.gsub(newString, pattern1, ("\\" .. pattern2))
 		end
 		
 		if (not noOuterQuotes) then
@@ -173,9 +176,12 @@ function menumods.string.LevelPop(str, numLevels)
 	
 	for i = 1, numLevels_new do
 		for k, v in pairs(escChars) do
-			newString = string.gsub(newString, string.PatternSafe(v[1]), "")
-			newString = string.gsub(newString, ("^\\" .. string.PatternSafe(v[2])), string.PatternSafe(v[1]))
-			newString = string.gsub(newString, ("([^\\])\\" .. string.PatternSafe(v[2])), ("%1" .. string.PatternSafe(v[1])))
+			local pattern1 = string.PatternSafe(v[1])
+			local pattern2 = string.PatternSafe(v[2])
+			
+			newString = string.gsub(newString, pattern1, "")
+			newString = string.gsub(newString, ("^\\" .. pattern2), pattern1)
+			newString = string.gsub(newString, ("([^\\])\\" .. pattern2), ("%1" .. pattern1))
 		end
 		
 		newString = string.gsub(newString, "\\\\", "\\")
