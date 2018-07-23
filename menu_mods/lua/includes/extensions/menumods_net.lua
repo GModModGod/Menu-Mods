@@ -738,7 +738,16 @@ local function WriteEntity(index, str, ent, valueReferences, tree)
 	
 	local entType = menumods.IndexToTypeID(index)
 	
-	if (entType == TYPE_ENTITY) then
+	if (entType == TYPE_ENTITY) then	
+		local model = ent:GetModel()
+		
+		if isstring(model) then
+			str = menumods.string.WriteBool(str, true)
+			str = menumods.string.WriteString(str, model)
+		else
+			str = menumods.string.WriteBool(str, false)
+		end
+		
 		str = menumods.string.WriteVector(str, ent:GetPos())
 		str = menumods.string.WriteAngle(str, ent:GetAngles())
 		str = menumods.string.WriteTable(str, {ent:GetTable(), ent:GetSaveTable()}, valueReferences, tree)
@@ -776,7 +785,7 @@ local function ReadEntity(index, str, root, valueReferences, tree)
 	entClass, str = menumods.string.ReadString(str)
 	
 	local entType = menumods.IndexToTypeID(index)
-	local ent
+	local ent = NULL
 	
 	local oldTree = {}
 	
@@ -791,92 +800,128 @@ local function ReadEntity(index, str, root, valueReferences, tree)
 	table.insert(tree, (#tree + 1), true)
 	
 	if (entType == TYPE_ENTITY) then
-		if (not menumods_CanCreateEntities) then
-			menumods.SetTableValue(valueReferences, NULL, unpack(oldTree))
-			
-			_, str = menumods.string.ReadVector(str)
-			_, str = menumods.string.ReadAngle(str)
-			_, str = menumods.string.ReadTable(str, nil, root, valueReferences, tree)
-			
-			table.remove(tree, #tree)
-			table.remove(tree, #tree)
-			
-			return NULL, str
-		end
-		
-		local entPos
+		local modelValid
+		local model
+		local entPos 
 		local entAngles
 		local entTable
+		
+		local newEntTable = {}
+		
+		newEntTable.IsValid = function(self)
+			return false, true
+		end
+		
+		modelValid, str = menumods.string.ReadBool(str)
+		
+		if modelValid then
+			model, str = menumods.string.ReadString(str)
+		end
 		
 		entPos, str = menumods.string.ReadVector(str)
 		entAngles, str = menumods.string.ReadAngle(str)
 		
-		ent = ents.Create(entClass)
+		newEntTable.Pos = entPos
+		newEntTable.Angles = entAngles
 		
-		ent:SetPos(entPos)
-		ent:SetAngles(entAngles)
+		if menumods_CanCreateEntities then
+			ent = ents.Create(entClass)
+			
+			ent:SetPos(entPos)
+			ent:SetAngles(entAngles)
+			
+			ent:Spawn()
+		end
 		
-		ent:Spawn()
+		local entIsValid
 		
-		menumods.SetTableValue(valueReferences, ent, unpack(oldTree))
+		if (menumods_CanCreateEntities and ent:IsValid()) then
+			menumods.SetTableValue(valueReferences, ent, unpack(oldTree))
+			
+			entIsValid = true
+		else
+			menumods.SetTableValue(valueReferences, newEntTable, unpack(oldTree))
+			
+			entIsValid = false
+		end
 		
 		entTable, str = menumods.string.ReadTable(str, nil, root, valueReferences, tree)
+		
+		newEntTable.Table = entTable[1]
+		newEntTable.SaveTable = entTable[2]
+		
+		table.remove(tree, #tree)
+		table.remove(tree, #tree)
+		
+		if entIsValid then
+			local newLuaTable = ent:GetTable()
 			
-		if (not ent:IsValid()) then
-			table.remove(tree, #tree)
-			table.remove(tree, #tree)
+			for k, v in pairs(newEntTable.Table) do
+				newLuaTable[k] = v
+			end
 			
-			return ent, str
+			ent:SetTable(newLuaTable)
+			
+			for k, v in pairs(newEntTable.SaveTable) do
+				ent:SetSaveValue(k, v)
+			end
+			
+			ent:Activate()
+		else
+			ent = newEntTable
 		end
-		
-		local luaTable = entTable[1]
-		local saveTable = entTable[2]
-		
-		local newLuaTable = ent:GetTable()
-		
-		for k, v in pairs(luaTable) do
-			newLuaTable[k] = v
-		end
-		
-		ent:SetTable(newLuaTable)
-		
-		for k, v in pairs(saveTable) do
-			ent:SetSaveValue(k, v)
-		end
-		
-		ent:Activate()
 	elseif (entType == TYPE_PANEL) then
 		local entPosX
 		local entPosY
 		local entTable
 		
+		local newEntTable = {}
+		
+		newEntTable.IsValid = function(self)
+			return false, true
+		end
+		
 		entPosX, str = menumods.string.ReadNumber(str)
 		entPosY, str = menumods.string.ReadNumber(str)
 		
+		newEntTable.Pos = {entPosX, entPosY}
+		
 		ent = vgui.Create(entClass)
 		
-		menumods.SetTableValue(valueReferences, ent, unpack(oldTree))
+		local entIsValid
+		
+		if ent:IsValid() then
+			menumods.SetTableValue(valueReferences, ent, unpack(oldTree))
+			
+			entIsValid = true
+		else
+			menumods.SetTableValue(valueReferences, newEntTable, unpack(oldTree))
+			
+			entIsValid = false
+		end
 		
 		entTable, str = menumods.string.ReadTable(str, nil, root, valueReferences, tree)
+		
+		newEntTable.Table = entTable
+		
+		table.remove(tree, #tree)
+		table.remove(tree, #tree)
+		
+		if entIsValid then
+			ent:SetPos(entPosX, entPosY)
 			
-		if (not ent:IsValid()) then
-			table.remove(tree, #tree)
-			table.remove(tree, #tree)
+			local newLuaTable = ent:GetTable()
 			
-			return ent, str
+			for k, v in pairs(entTable) do
+				newLuaTable[k] = v
+			end
+		else
+			ent = newEntTable
 		end
-		
-		ent:SetPos(entPosX, entPosY)
-		
-		local newLuaTable = ent:GetTable()
-		
-		for k, v in pairs(entTable) do
-			newLuaTable[k] = v
-		end
+	else
+		table.remove(tree, #tree)
+		table.remove(tree, #tree)
 	end
-	
-	table.remove(tree, #tree)
-	table.remove(tree, #tree)
 	
 	return ent, str
 end
