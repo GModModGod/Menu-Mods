@@ -653,7 +653,7 @@ menumods.string.ReadTable = function(str, newTab, root, valueReferences, tree)
 					menumods.SetTableValue(valueReferences, v, unpack(tree))
 				end
 			else
-				v, str = menumods.string.ReadTable(str, nil, root, valueReferences, tree)
+				v, str = menumods.string.ReadTable(str, newTab[k], root, valueReferences, tree)
 			end
 			
 			table.remove(tree, #tree)
@@ -960,8 +960,8 @@ include("includes/modules/netdata.lua")
 
 menumods.net = {}
 
-local CurrMsg_Send
-local CurrMsg_Receive
+local MessagesToSend = {}
+local MessagesToReceive = {}
 
 local NetReceiveFuncs = {}
 local NetDir_Receive
@@ -981,14 +981,60 @@ else
 	NetDir_Send = MenuDir
 end
 
+local function GetFunctionOnLevel(level)
+	return debug.getinfo((level + 1), "f").func
+end
+
+local function GetCurrentSendingMsg(level)
+	local currFunc = GetFunctionOnLevel(level + 1)
+	local currMsg = MessagesToSend[currFunc]
+	
+	if ((not istable(currMsg)) or (not isstring(currMsg[1])) or (not currMsg[2]:IsValid())) then
+		if currMsg[2]:IsValid() then
+			currMsg[2]:Remove()
+		end
+		
+		MessagesToSend[currFunc] = nil
+		
+		return
+	end
+	
+	return currMsg
+end
+
+local function GetCurrentReceivingMsg(level)
+	local currFunc = GetFunctionOnLevel(level + 1)
+	local currMsg = MessagesToReceive[currFunc]
+	
+	if ((not istable(currMsg)) or (not isstring(currMsg[1])) or (not currMsg[2]:IsValid())) then
+		if currMsg[2]:IsValid() then
+			currMsg[2]:Remove()
+		end
+		
+		MessagesToReceive[currFunc] = nil
+		
+		return
+	end
+	
+	return currMsg
+end
+
 function menumods.net.Start(identifier)
 	if (not isstring(identifier)) then return end
 	
+	local currFunc = GetFunctionOnLevel(2)
+	
+	if (not currFunc) then
+		currFunc = false
+	end
+	
+	if MessagesToSend[currFunc] then return end
+	
 	local newMsg = netdata.Create("base_netdata")
 	
-	newMsg:WriteString(identifier)
+	MessagesToSend[currFunc] = {identifier, newMsg}
 	
-	CurrMsg_Send = {identifier, newMsg}
+	newMsg:WriteString(identifier)
 end
 
 local IsInGame = IsInGame
@@ -999,19 +1045,19 @@ if (not isfunction(IsInGame)) then
 	end
 end
 
-local function SendMsg()
-	if ((not istable(CurrMsg_Send)) or (not isstring(CurrMsg_Send[1])) or (not CurrMsg_Send[2]:IsValid())) then
-		if CurrMsg_Send[2]:IsValid() then
-			CurrMsg_Send[2]:Remove()
+local function SendMsg(currMsg)
+	if ((not currMsg) or (not isstring(currMsg[1])) or (not currMsg[2]:IsValid())) then
+		if currMsg[2]:IsValid() then
+			currMsg[2]:Remove()
 		end
 		
-		CurrMsg_Send = nil
+		MessagesToSend[currFunc] = nil
 		
 		return
 	end
 	
-	local identifier = CurrMsg_Send[1]
-	local message = CurrMsg_Send[2]
+	local identifier = currMsg[1]
+	local message = currMsg[2]
 	
 	local files, dirs = file.Find((NetDir_Send .. "/*.txt"), "DATA")
 	local occupiedIDs = {}
@@ -1060,23 +1106,31 @@ local function SendMsg()
 	
 	message:Remove()
 	
-	CurrMsg_Send = nil
+	MessagesToSend[currFunc] = nil
 end
 
 function menumods.net.Send()
+	local currFunc = GetFunctionOnLevel(2)
+	
+	if (not currFunc) then
+		currFunc = false
+	end
+	
+	local currMsg = MessagesToSend[currFunc]
+	
 	if ((not NetEnabled) or (not ShouldSendMsg) or (not IsInGame())) then
-		if istable(CurrMsg_Send) then
-			if CurrMsg_Send[2]:IsValid() then
-				CurrMsg_Send[2]:Remove()
+		if istable(currMsg) then
+			if currMsg[2]:IsValid() then
+				currMsg[2]:Remove()
 			end
 		end
 		
-		CurrMsg_Send = nil
+		MessagesToSend[currFunc] = nil
 		
 		return
 	end
 	
-	SendMsg()
+	SendMsg(currMsg)
 end
 
 function menumods.net.Receive(identifier, func)
@@ -1090,201 +1144,165 @@ end
 menumods.net.IsValidType = menumods.IsValidType
 
 function menumods.net.WriteAngle(val)
-	if ((not istable(CurrMsg_Send)) or (not isstring(CurrMsg_Send[1])) or (not CurrMsg_Send[2]:IsValid())) then
-		if CurrMsg_Send[2]:IsValid() then
-			CurrMsg_Send[2]:Remove()
-		end
-		
-		CurrMsg_Send = nil
-		
-		return
-	end
+	local currMsg = GetCurrentSendingMsg(2)
 	
-	local message = CurrMsg_Send[2]
+	if (not currMsg) then return end
+	
+	local message = currMsg[2]
 	
 	message:WriteAngle(val)
 end
 
 function menumods.net.WriteBool(val)
-	if ((not istable(CurrMsg_Send)) or (not isstring(CurrMsg_Send[1])) or (not CurrMsg_Send[2]:IsValid())) then
-		if CurrMsg_Send[2]:IsValid() then
-			CurrMsg_Send[2]:Remove()
-		end
-		
-		CurrMsg_Send = nil
-		
-		return
-	end
+	local currMsg = GetCurrentSendingMsg(2)
 	
-	local message = CurrMsg_Send[2]
+	if (not currMsg) then return end
+	
+	local message = currMsg[2]
 	
 	message:WriteBool(val)
 end
 
 function menumods.net.WriteNumber(val)
-	if ((not istable(CurrMsg_Send)) or (not isstring(CurrMsg_Send[1])) or (not CurrMsg_Send[2]:IsValid())) then
-		if CurrMsg_Send[2]:IsValid() then
-			CurrMsg_Send[2]:Remove()
-		end
-		
-		CurrMsg_Send = nil
-		
-		return
-	end
+	local currMsg = GetCurrentSendingMsg(2)
 	
-	local message = CurrMsg_Send[2]
+	if (not currMsg) then return end
+	
+	local message = currMsg[2]
 	
 	message:WriteNumber(val)
 end
 
 function menumods.net.WriteString(val)
-	if ((not istable(CurrMsg_Send)) or (not isstring(CurrMsg_Send[1])) or (not CurrMsg_Send[2]:IsValid())) then
-		if CurrMsg_Send[2]:IsValid() then
-			CurrMsg_Send[2]:Remove()
-		end
-		
-		CurrMsg_Send = nil
-		
-		return
-	end
+	local currMsg = GetCurrentSendingMsg(2)
 	
-	local message = CurrMsg_Send[2]
+	if (not currMsg) then return end
+	
+	local message = currMsg[2]
 	
 	message:WriteString(val)
 end
 
 function menumods.net.WriteTable(val)
-	if ((not istable(CurrMsg_Send)) or (not isstring(CurrMsg_Send[1])) or (not CurrMsg_Send[2]:IsValid())) then
-		if CurrMsg_Send[2]:IsValid() then
-			CurrMsg_Send[2]:Remove()
-		end
-		
-		CurrMsg_Send = nil
-		
-		return
-	end
+	local currMsg = GetCurrentSendingMsg(2)
 	
-	local message = CurrMsg_Send[2]
+	if (not currMsg) then return end
+	
+	local message = currMsg[2]
 	
 	message:WriteTable(val)
 end
 
 function menumods.net.WriteEntity(val)
-	if ((not istable(CurrMsg_Send)) or (not isstring(CurrMsg_Send[1])) or (not CurrMsg_Send[2]:IsValid())) then
-		if CurrMsg_Send[2]:IsValid() then
-			CurrMsg_Send[2]:Remove()
-		end
-		
-		CurrMsg_Send = nil
-		
-		return
-	end
+	local currMsg = GetCurrentSendingMsg(2)
 	
-	local message = CurrMsg_Send[2]
+	if (not currMsg) then return end
+	
+	local message = currMsg[2]
 	
 	message:WriteEntity(val)
 end
 
 function menumods.net.WritePanel(val)
-	if ((not istable(CurrMsg_Send)) or (not isstring(CurrMsg_Send[1])) or (not CurrMsg_Send[2]:IsValid())) then
-		if CurrMsg_Send[2]:IsValid() then
-			CurrMsg_Send[2]:Remove()
-		end
-		
-		CurrMsg_Send = nil
-		
-		return
-	end
+	local currMsg = GetCurrentSendingMsg(2)
 	
-	local message = CurrMsg_Send[2]
+	if (not currMsg) then return end
+	
+	local message = currMsg[2]
 	
 	message:WritePanel(val)
 end
 
 function menumods.net.WriteVector(val)
-	if ((not istable(CurrMsg_Send)) or (not isstring(CurrMsg_Send[1])) or (not CurrMsg_Send[2]:IsValid())) then
-		if CurrMsg_Send[2]:IsValid() then
-			CurrMsg_Send[2]:Remove()
-		end
-		
-		CurrMsg_Send = nil
-		
-		return
-	end
+	local currMsg = GetCurrentSendingMsg(2)
 	
-	local message = CurrMsg_Send[2]
+	if (not currMsg) then return end
+	
+	local message = currMsg[2]
 	
 	message:WriteVector(val)
 end
 
 function menumods.net.WriteType(val)
-	if ((not istable(CurrMsg_Send)) or (not isstring(CurrMsg_Send[1])) or (not CurrMsg_Send[2]:IsValid())) then
-		if CurrMsg_Send[2]:IsValid() then
-			CurrMsg_Send[2]:Remove()
-		end
-		
-		CurrMsg_Send = nil
-		
-		return
-	end
+	local currMsg = GetCurrentSendingMsg(2)
 	
-	local message = CurrMsg_Send[2]
+	if (not currMsg) then return end
+	
+	local message = currMsg[2]
 	
 	message:WriteType(val)
 end
 
 function menumods.net.ReadAngle()
-	if ((not CurrMsg_Receive) or (not CurrMsg_Receive:IsValid())) then return end
+	local currMsg = GetCurrentReceivingMsg(2)
 	
-	return CurrMsg_Receive:ReadAngle()
+	if (not currMsg) then return end
+	
+	return currMsg:ReadAngle()
 end
 
 function menumods.net.ReadBool()
-	if ((not CurrMsg_Receive) or (not CurrMsg_Receive:IsValid())) then return end
+	local currMsg = GetCurrentReceivingMsg(2)
 	
-	return CurrMsg_Receive:ReadBool()
+	if (not currMsg) then return end
+	
+	return currMsg:ReadBool()
 end
 
 function menumods.net.ReadNumber()
-	if ((not CurrMsg_Receive) or (not CurrMsg_Receive:IsValid())) then return end
+	local currMsg = GetCurrentReceivingMsg(2)
 	
-	return CurrMsg_Receive:ReadNumber()
+	if (not currMsg) then return end
+	
+	return currMsg:ReadNumber()
 end
 
 function menumods.net.ReadString()
-	if ((not CurrMsg_Receive) or (not CurrMsg_Receive:IsValid())) then return end
+	local currMsg = GetCurrentReceivingMsg(2)
 	
-	return CurrMsg_Receive:ReadString()
+	if (not currMsg) then return end
+	
+	return currMsg:ReadString()
 end
 
 function menumods.net.ReadTable(newTab)
-	if ((not CurrMsg_Receive) or (not CurrMsg_Receive:IsValid())) then return end
+	local currMsg = GetCurrentReceivingMsg(2)
 	
-	return CurrMsg_Receive:ReadTable(newTab)
+	if (not currMsg) then return end
+	
+	return currMsg:ReadTable(newTab)
 end
 
 function menumods.net.ReadEntity()
-	if ((not CurrMsg_Receive) or (not CurrMsg_Receive:IsValid())) then return end
+	local currMsg = GetCurrentReceivingMsg(2)
 	
-	return CurrMsg_Receive:ReadEntity()
+	if (not currMsg) then return end
+	
+	return currMsg:ReadEntity()
 end
 
 function menumods.net.ReadPanel()
-	if ((not CurrMsg_Receive) or (not CurrMsg_Receive:IsValid())) then return end
+	local currMsg = GetCurrentReceivingMsg(2)
 	
-	return CurrMsg_Receive:ReadPanel()
+	if (not currMsg) then return end
+	
+	return currMsg:ReadPanel()
 end
 
 function menumods.net.ReadVector()
-	if ((not CurrMsg_Receive) or (not CurrMsg_Receive:IsValid())) then return end
+	local currMsg = GetCurrentReceivingMsg(2)
 	
-	return CurrMsg_Receive:ReadVector()
+	if (not currMsg) then return end
+	
+	return currMsg:ReadVector()
 end
 
 function menumods.net.ReadType()
-	if ((not CurrMsg_Receive) or (not CurrMsg_Receive:IsValid())) then return end
+	local currMsg = GetCurrentReceivingMsg(2)
 	
-	return CurrMsg_Receive:ReadType()
+	if (not currMsg) then return end
+	
+	return currMsg:ReadType()
 end
 
 local SendNotifyDir = (NetDir_Send .. "/shouldsend.txt")
@@ -1306,18 +1324,7 @@ local function ReceiveTickRate()
 		menumods.net.Start("menumods_net_update")
 		menumods.net.WriteBool(newEnabled)
 		menumods.net.WriteNumber(newTickRate)
-		
-		if ShouldSendMsg then
-			SendMsg()
-		else
-			if istable(CurrMsg_Send) then
-				if CurrMsg_Send[2]:IsValid() then
-					CurrMsg_Send[2]:Remove()
-				end
-			end
-			
-			CurrMsg_Send = nil
-		end
+		menumods.net.Send()
 	end
 end
 
@@ -1342,18 +1349,7 @@ local function Think()
 			menumods.net.Start("menumods_net_update")
 			menumods.net.WriteBool(newEnabled)
 			menumods.net.WriteNumber(newTickRate)
-			
-			if ShouldSendMsg then
-				SendMsg()
-			else
-				if istable(CurrMsg_Send) then
-					if CurrMsg_Send[2]:IsValid() then
-						CurrMsg_Send[2]:Remove()
-					end
-				end
-				
-				CurrMsg_Send = nil
-			end
+			menumods.net.Send()
 		end
 	end
 	
@@ -1427,23 +1423,26 @@ local function Think()
 			local startPos = string.find(v, "%d+%.txt$", 1, false)
 			
 			if startPos then
-				CurrMsg_Receive = netdata.Create("base_netdata")
+				currMsg = netdata.Create("base_netdata")
 				
 				local filename = (dirs[k] .. "/" .. v)
 				
-				CurrMsg_Receive:ReadDataFromFile(filename, "DATA")
+				currMsg:ReadDataFromFile(filename, "DATA")
 				
 				file.Delete(filename)
 				
-				local identifier = CurrMsg_Receive:ReadString()
+				local identifier = currMsg:ReadString()
+				local currFunc = NetReceiveFuncs[identifier]
 				
-				if isfunction(NetReceiveFuncs[identifier]) then
-					NetReceiveFuncs[identifier]()
+				if isfunction(currFunc) then
+					MessagesToReceive[currFunc] = {identifier, currMsg}
+					
+					currFunc()
+					
+					MessagesToReceive[currFunc] = nil
 				end
 				
-				CurrMsg_Receive:Remove()
-				
-				CurrMsg_Receive = nil
+				currMsg:Remove()
 			end
 		end
 	end
