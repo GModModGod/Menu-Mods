@@ -1016,11 +1016,15 @@ local function GetCurrentReceivingMsg(level)
 	
 	local currMsg = MessagesToReceive[currFunc]
 	
-	if ((not istable(currMsg)) or (not isstring(currMsg[1])) or (not currMsg[2]:IsValid())) then
-		if currMsg[2]:IsValid() then
-			currMsg[2]:Remove()
+	if currMsg then
+		if (not currMsg:IsValid()) then
+			currMsg:Remove()
+			
+			MessagesToReceive[currFunc] = nil
+			
+			return
 		end
-		
+	else
 		MessagesToReceive[currFunc] = nil
 		
 		return
@@ -1445,7 +1449,7 @@ Think = function()
 			local startPos = string.find(v, "%d+%.txt$", 1, false)
 			
 			if startPos then
-				currMsg = netdata.Create("base_netdata")
+				local currMsg = netdata.Create("base_netdata")
 				
 				local filename = (dirs[k] .. "/" .. v)
 				
@@ -1457,7 +1461,7 @@ Think = function()
 				local currFunc = NetReceiveFuncs[identifier]
 				
 				if isfunction(currFunc) then
-					MessagesToReceive[currFunc] = {identifier, currMsg}
+					MessagesToReceive[currFunc] = currMsg
 					
 					currFunc()
 					
