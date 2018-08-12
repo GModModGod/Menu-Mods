@@ -1331,7 +1331,9 @@ local Warning = false
 local CurrTickRate = tickRateDefault
 local LastUpdate = SysTime()
 
-local function ReceiveTickRate()
+local ReceiveTickRate
+
+ReceiveTickRate = function()
 	local newEnabled = menumods.net.ReadBool()
 	local newTickRate = menumods.net.ReadNumber()
 	
@@ -1342,13 +1344,15 @@ local function ReceiveTickRate()
 		menumods.net.Start("menumods_net_update")
 		menumods.net.WriteBool(newEnabled)
 		menumods.net.WriteNumber(newTickRate)
-		menumods.net.Send()
+		SendMsg(ReceiveTickRate)
 	end
 end
 
 menumods.net.Receive("menumods_net_update", ReceiveTickRate)
 
-local function Think()
+local Think
+
+Think = function()
 	local currTime = SysTime()
 	
 	if (CurrTickRate > 0) then
@@ -1367,7 +1371,7 @@ local function Think()
 			menumods.net.Start("menumods_net_update")
 			menumods.net.WriteBool(newEnabled)
 			menumods.net.WriteNumber(newTickRate)
-			menumods.net.Send()
+			SendMsg(Think)
 		end
 	end
 	
