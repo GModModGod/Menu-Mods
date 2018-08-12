@@ -987,6 +987,11 @@ end
 
 local function GetCurrentSendingMsg(level)
 	local currFunc = GetFunctionOnLevel(level + 1)
+	
+	if (not currFunc) then
+		currFunc = false
+	end
+	
 	local currMsg = MessagesToSend[currFunc]
 	
 	if ((not istable(currMsg)) or (not isstring(currMsg[1])) or (not currMsg[2]:IsValid())) then
@@ -1004,6 +1009,11 @@ end
 
 local function GetCurrentReceivingMsg(level)
 	local currFunc = GetFunctionOnLevel(level + 1)
+	
+	if (not currFunc) then
+		currFunc = false
+	end
+	
 	local currMsg = MessagesToReceive[currFunc]
 	
 	if ((not istable(currMsg)) or (not isstring(currMsg[1])) or (not currMsg[2]:IsValid())) then
@@ -1045,7 +1055,15 @@ if (not isfunction(IsInGame)) then
 	end
 end
 
-local function SendMsg(currMsg)
+local function SendMsg(currFunc)
+	local currFunc = currFunc
+	
+	if (not currFunc) then
+		currFunc = false
+	end
+	
+	local currMsg = MessagesToSend[currFunc]
+	
 	if ((not currMsg) or (not isstring(currMsg[1])) or (not currMsg[2]:IsValid())) then
 		if currMsg[2]:IsValid() then
 			currMsg[2]:Remove()
@@ -1112,13 +1130,13 @@ end
 function menumods.net.Send()
 	local currFunc = GetFunctionOnLevel(2)
 	
-	if (not currFunc) then
-		currFunc = false
-	end
-	
-	local currMsg = MessagesToSend[currFunc]
-	
 	if ((not NetEnabled) or (not ShouldSendMsg) or (not IsInGame())) then
+		if (not currFunc) then
+			currFunc = false
+		end
+		
+		local currMsg = MessagesToSend[currFunc]
+		
 		if istable(currMsg) then
 			if currMsg[2]:IsValid() then
 				currMsg[2]:Remove()
@@ -1130,7 +1148,7 @@ function menumods.net.Send()
 		return
 	end
 	
-	SendMsg(currMsg)
+	SendMsg(currFunc)
 end
 
 function menumods.net.Receive(identifier, func)
