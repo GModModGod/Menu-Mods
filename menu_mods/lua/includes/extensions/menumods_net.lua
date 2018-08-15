@@ -812,6 +812,10 @@ local function ReadEntity(index, str, root, valueReferences, tree)
 			return false, true
 		end
 		
+		newEntTable.IsWorld = function(self)
+			return false
+		end
+		
 		modelValid, str = menumods.string.ReadBool(str)
 		
 		if modelValid then
