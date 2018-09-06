@@ -6,7 +6,7 @@ if MENU_DLL then
 	CreateConVar("menumods_net_tickRate", tostring(tickRateDefault), FCVAR_ARCHIVE)
 end
 
-local menumods_CanCreateEntities = false
+local menumods_CanCreateEntities = SERVER
 
 local menumods_TypeIDs = {
 	["no value"] = TYPE_NONE,
@@ -21,6 +21,7 @@ local menumods_TypeIDs = {
 	["Vector"] = TYPE_VECTOR,
 	["Entity"] = TYPE_ENTITY,
 	["Panel"] = TYPE_PANEL,
+	["Color"] = 255
 }
 
 local function TypeID(val)
@@ -558,7 +559,7 @@ menumods.string.WriteTable = function(str, tab, valueReferences, tree)
 	return str
 end
 
-menumods.string.ReadTable = function(str, newTab, root, valueReferences, tree)
+menumods.string.ReadTable = function(str, newTab, getEntsAsTables, root, valueReferences, tree)
 	if (not istable(newTab)) then
 		newTab = {}
 	end
@@ -599,7 +600,7 @@ menumods.string.ReadTable = function(str, newTab, root, valueReferences, tree)
 				local isReferenceable
 				isReferenceable, str = menumods.string.ReadBool(str)
 				
-				k, str = menumods.string.ReadType(str, root, valueReferences, tree)
+				k, str = menumods.string.ReadType(str, getEntsAsTables, root, valueReferences, tree)
 				
 				if isReferenceable then
 					menumods.SetTableValue(valueReferences, k, unpack(tree))
@@ -647,13 +648,13 @@ menumods.string.ReadTable = function(str, newTab, root, valueReferences, tree)
 				local isReferenceable
 				isReferenceable, str = menumods.string.ReadBool(str)
 				
-				v, str = menumods.string.ReadType(str, root, valueReferences, tree)
+				v, str = menumods.string.ReadType(str, getEntsAsTables, root, valueReferences, tree)
 				
 				if isReferenceable then
 					menumods.SetTableValue(valueReferences, v, unpack(tree))
 				end
 			else
-				v, str = menumods.string.ReadTable(str, newTab[k], root, valueReferences, tree)
+				v, str = menumods.string.ReadTable(str, newTab[k], getEntsAsTables, root, valueReferences, tree)
 			end
 			
 			table.remove(tree, #tree)
@@ -765,7 +766,7 @@ local function WriteEntity(index, str, ent, valueReferences, tree)
 	return str
 end
 
-local function ReadEntity(index, str, root, valueReferences, tree)
+local function ReadEntity(index, str, getEntsAsTables, root, valueReferences, tree)
 	if (not istable(valueReferences)) then
 		valueReferences = {}
 	end
@@ -828,7 +829,9 @@ local function ReadEntity(index, str, root, valueReferences, tree)
 		newEntTable.Pos = entPos
 		newEntTable.Angles = entAngles
 		
-		if menumods_CanCreateEntities then
+		local shouldCreate = ((not getEntsAsTables) and menumods_CanCreateEntities)
+		
+		if shouldCreate then
 			ent = ents.Create(entClass)
 			
 			ent:SetPos(entPos)
@@ -839,7 +842,7 @@ local function ReadEntity(index, str, root, valueReferences, tree)
 		
 		local entIsValid
 		
-		if (menumods_CanCreateEntities and ent:IsValid()) then
+		if (shouldCreate and ent:IsValid()) then
 			menumods.SetTableValue(valueReferences, ent, unpack(oldTree))
 			
 			entIsValid = true
@@ -849,7 +852,7 @@ local function ReadEntity(index, str, root, valueReferences, tree)
 			entIsValid = false
 		end
 		
-		entTable, str = menumods.string.ReadTable(str, nil, root, valueReferences, tree)
+		entTable, str = menumods.string.ReadTable(str, nil, getEntsAsTables, root, valueReferences, tree)
 		
 		newEntTable.Table = entTable[1]
 		newEntTable.SaveTable = entTable[2]
@@ -890,11 +893,15 @@ local function ReadEntity(index, str, root, valueReferences, tree)
 		
 		newEntTable.Pos = {entPosX, entPosY}
 		
-		ent = vgui.Create(entClass)
+		local shouldCreate = (not getEntsAsTables)
+		
+		if shouldCreate then
+			ent = vgui.Create(entClass)
+		end
 		
 		local entIsValid
 		
-		if ent:IsValid() then
+		if (shouldCreate and ent:IsValid()) then
 			menumods.SetTableValue(valueReferences, ent, unpack(oldTree))
 			
 			entIsValid = true
@@ -904,7 +911,7 @@ local function ReadEntity(index, str, root, valueReferences, tree)
 			entIsValid = false
 		end
 		
-		entTable, str = menumods.string.ReadTable(str, nil, root, valueReferences, tree)
+		entTable, str = menumods.string.ReadTable(str, nil, getEntsAsTables, root, valueReferences, tree)
 		
 		newEntTable.Table = entTable
 		
