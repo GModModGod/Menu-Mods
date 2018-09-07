@@ -132,108 +132,108 @@ function NetDatas.base_netdata:ReadDataFromFile(filename, dir)
 	self:OnReadFromFile(filename, dir, oldData)
 end
 
-function NetDatas.base_netdata:WriteAngle(val)
-	self.Data = menumods.string.WriteAngle(self.Data, val)
+function NetDatas.base_netdata:WriteAngle(...)
+	self.Data = menumods.string.WriteAngle(self.Data, ...)
 end
 
-function NetDatas.base_netdata:WriteBool(val)
-	self.Data = menumods.string.WriteBool(self.Data, val)
+function NetDatas.base_netdata:WriteBool(...)
+	self.Data = menumods.string.WriteBool(self.Data, ...)
 end
 
-function NetDatas.base_netdata:WriteNumber(val)
-	self.Data = menumods.string.WriteNumber(self.Data, val)
+function NetDatas.base_netdata:WriteNumber(...)
+	self.Data = menumods.string.WriteNumber(self.Data, ...)
 end
 
-function NetDatas.base_netdata:WriteString(val)
-	self.Data = menumods.string.WriteString(self.Data, val)
+function NetDatas.base_netdata:WriteString(...)
+	self.Data = menumods.string.WriteString(self.Data, ...)
 end
 
-function NetDatas.base_netdata:WriteTable(val)
-	self.Data = menumods.string.WriteTable(self.Data, val)
+function NetDatas.base_netdata:WriteTable(...)
+	self.Data = menumods.string.WriteTable(self.Data, ...)
 end
 
-function NetDatas.base_netdata:WriteEntity(val)
-	self.Data = menumods.string.WriteEntity(self.Data, val)
+function NetDatas.base_netdata:WriteEntity(...)
+	self.Data = menumods.string.WriteEntity(self.Data, ...)
 end
 
-function NetDatas.base_netdata:WritePanel(val)
-	self.Data = menumods.string.WritePanel(self.Data, val)
+function NetDatas.base_netdata:WritePanel(...)
+	self.Data = menumods.string.WritePanel(self.Data, ...)
 end
 
-function NetDatas.base_netdata:WriteVector(val)
-	self.Data = menumods.string.WriteVector(self.Data, val)
+function NetDatas.base_netdata:WriteVector(...)
+	self.Data = menumods.string.WriteVector(self.Data, ...)
 end
 
-function NetDatas.base_netdata:WriteType(val)
-	self.Data = menumods.string.WriteType(self.Data, val)
+function NetDatas.base_netdata:WriteType(...)
+	self.Data = menumods.string.WriteType(self.Data, ...)
 end
 
-function NetDatas.base_netdata:ReadAngle()
-	local newVal, newData = menumods.string.ReadAngle(self.Data)
+function NetDatas.base_netdata:ReadAngle(...)
+	local newVal, newData = menumods.string.ReadAngle(self.Data, ...)
 	
 	self.Data = newData
 	
 	return newVal
 end
 
-function NetDatas.base_netdata:ReadBool()
-	local newVal, newData = menumods.string.ReadBool(self.Data)
+function NetDatas.base_netdata:ReadBool(...)
+	local newVal, newData = menumods.string.ReadBool(self.Data, ...)
 	
 	self.Data = newData
 	
 	return newVal
 end
 
-function NetDatas.base_netdata:ReadNumber()
-	local newVal, newData = menumods.string.ReadNumber(self.Data)
+function NetDatas.base_netdata:ReadNumber(...)
+	local newVal, newData = menumods.string.ReadNumber(self.Data, ...)
 	
 	self.Data = newData
 	
 	return newVal
 end
 
-function NetDatas.base_netdata:ReadString()
-	local newVal, newData = menumods.string.ReadString(self.Data)
+function NetDatas.base_netdata:ReadString(...)
+	local newVal, newData = menumods.string.ReadString(self.Data, ...)
 	
 	self.Data = newData
 	
 	return newVal
 end
 
-function NetDatas.base_netdata:ReadTable(newTab)
-	local newVal, newData = menumods.string.ReadTable(self.Data, newTab)
+function NetDatas.base_netdata:ReadTable(...)
+	local newVal, newData = menumods.string.ReadTable(self.Data, ...)
 	
 	self.Data = newData
 	
 	return newVal
 end
 
-function NetDatas.base_netdata:ReadEntity()
-	local newVal, newData = menumods.string.ReadEntity(self.Data)
+function NetDatas.base_netdata:ReadEntity(...)
+	local newVal, newData = menumods.string.ReadEntity(self.Data, ...)
 	
 	self.Data = newData
 	
 	return newVal
 end
 
-function NetDatas.base_netdata:ReadPanel()
-	local newVal, newData = menumods.string.ReadTable(self.Data)
+function NetDatas.base_netdata:ReadPanel(...)
+	local newVal, newData = menumods.string.ReadTable(self.Data, ...)
 	
 	self.Data = newData
 	
 	return newVal
 end
 
-function NetDatas.base_netdata:ReadVector()
-	local newVal, newData = menumods.string.ReadVector(self.Data)
+function NetDatas.base_netdata:ReadVector(...)
+	local newVal, newData = menumods.string.ReadVector(self.Data, ...)
 	
 	self.Data = newData
 	
 	return newVal
 end
 
-function NetDatas.base_netdata:ReadType()
-	local newVal, newData = menumods.string.ReadType(self.Data)
+function NetDatas.base_netdata:ReadType(...)
+	local newVal, newData = menumods.string.ReadType(self.Data, ...)
 	
 	self.Data = newData
 	

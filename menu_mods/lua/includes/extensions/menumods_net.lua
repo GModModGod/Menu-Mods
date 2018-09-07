@@ -75,11 +75,19 @@ local menumods_ReferenceableTypes = {
 	[TYPE_VECTOR] = true
 }
 
+local function SafeToString(val)
+	if (val or isbool(val)) then
+		return tostring(val)
+	else
+		return type(val)
+	end
+end
+
 function menumods.string.AppendValues(str, ...)
 	local vals = {...}
 	
 	for k, v in ipairs(vals) do
-		str = str .. tostring(v) .. ";"
+		str = str .. SafeToString(v) .. ";"
 	end
 	
 	return str
@@ -163,7 +171,7 @@ local menumods_WriteTypeFuncs = {
 		return str
 	end,
 	[5] = function(str, val)
-		str = menumods.string.AppendValues(str, menumods.string.LevelPush(tostring(val), 1, false))
+		str = menumods.string.AppendValues(str, menumods.string.LevelPush(SafeToString(val), 1, false))
 		
 		return str
 	end,
