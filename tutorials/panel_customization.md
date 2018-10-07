@@ -44,7 +44,7 @@ or
 ```
 local pnl = parentpanel:Add( "MyFirstPanel" )
 ```
-### Complete Code
+## Complete Code
 ```
 local PANEL = {}
 
