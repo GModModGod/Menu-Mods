@@ -525,7 +525,25 @@ local function Mount()
 	
 	if (GetConVarNumber("menumods_enabled") == 0) then return end
 	
-	local files, dirs = file.Find("lua/autorun/menu/*.lua", "GAME")
+	local files, dirs = file.Find("lua/vgui_menu/*.lua", "GAME")
+	
+	for k, v in pairs(files) do
+		if (not dirs[k]) then
+			dirs[k] = "lua/vgui_menu"
+		end
+		
+		local filename = (dirs[k] .. "/" .. v)
+		
+		if ((not FileTable[filename]) and file.Exists(filename, "GAME")) then
+			local newFileName = string.gsub(filename, "^lua%/", "")
+			
+			menumods.include(newFileName)
+			
+			FileTable[filename] = true
+		end
+	end
+	
+	files, dirs = file.Find("lua/autorun/menu/*.lua", "GAME")
 	
 	for k, v in pairs(files) do
 		if (not dirs[k]) then
@@ -543,7 +561,7 @@ local function Mount()
 		end
 	end
 	
-	local files, dirs = file.Find("lua/htmldocs/*.lua", "GAME")
+	files, dirs = file.Find("lua/htmldocs/*.lua", "GAME")
 	
 	for k, v in ipairs(files) do
 		if (not dirs[k]) then
@@ -605,7 +623,7 @@ local function Mount()
 		end
 	end
 	
-	local files, dirs = file.Find("lua/jsdocs/*.lua", "GAME")
+	files, dirs = file.Find("lua/jsdocs/*.lua", "GAME")
 	
 	for k, v in ipairs(files) do
 		if (not dirs[k]) then
