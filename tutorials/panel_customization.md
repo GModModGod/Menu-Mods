@@ -1,4 +1,4 @@
-Follow the tutorial below (from [this](http://wiki.garrysmod.com/page/Panel_Customization) Garry's Mod Wiki page), but instead of placing the source code in the usual folder ("lua/vgui"), place it in the folder "lua/vgui_menu".
+Follow the tutorial below (from [this](http://wiki.garrysmod.com/page/Panel_Customization "Garry's Mod Wiki") Garry's Mod Wiki page), but instead of placing the source code in the usual folder ("lua/vgui"), place it in the folder "lua/vgui_menu".
 
 # Panel Customization
 
