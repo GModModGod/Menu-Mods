@@ -30,6 +30,7 @@ menumods_net_tickRate | 30 | Sets the number of times per second at which net me
 - [Your First Menu Option](/tutorials/your_first_menu_option.md "Your First Menu Option")
 - [Creating Lua-Based HTML Documents](/tutorials/creating_lua-based_html_documents.md "Creating Lua-Based HTML Documents")
 - [Creating Lua-Based JavaScript Documents](/tutorials/creating_lua-based_javascript_documents.md "Creating Lua-Based JavaScript Documents")
+- [Panel Customization](/tutorials/panel_customization.md "Panel Customization")
 
 ## References
 
