@@ -1,0 +1,53 @@
+# einen dank 
+    // Verwendet IntelliSense zum Ermitteln möglicher Attribute.
+    // Zeigen Sie auf vorhandene Attribute, um die zugehörigen Beschreibungen anzuzeigen.
+    // Weitere Informationen finden Sie unter https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": ["star"" port remote 3074
+    t
+
+
+
+        {
+            "name": "Attach to Chrome",
+            "port": 9222,
+            "request": "attach",
+            "type": "chrome",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+   "/workspaces/Menu-Mods/a.out"    t
+     "name": "(gdb) Starten",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "Programmnamen eingeben, z. B. \"${workspaceFolder}/a.out\"",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Automatische Strukturierung und Einrückung für \"gdb\" aktivieren",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}"xp"100
+
+
+{
+    "version": "0.2.0",
+    "configurations": [],
+    "compounds": []"-enable-pretty-printing",
+
+}description"
+
+{
+    "version": "0.2.0",
+    "configurations": [https://milliseconds/Beachten
+    ""
+"help

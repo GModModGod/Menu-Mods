@@ -1,5 +1,5 @@
-### Luajs. 
 
+**
 
 ### luajs.Register(tab, name)
 
@@ -12,7 +12,7 @@ Arguments:
 
 IMPORTANT: It is highly recommended to refrain from using this function to create luajs classes unless there is a specific reason for doing so.
 
-### luajs.Create(class)
+**### luajs.Create(class)**
 
 Creates a new luajs object of the specified class name.
 
@@ -95,3 +95,12 @@ Arguments:
 Returns:
 
 - table tab: The found objects.
+
+### luajs.Create(class)
+-### luajs.Create(class)
+
+ - string class: The class name of the new object.
+
+### luajs.FindByClass(class)
+
+
